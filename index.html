@@ -18,40 +18,37 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-      body { font-family: 'DM Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+     :root {
+    /* Base Zone Colors */
+    --zone-green: #c3eabd;
+    --zone-green-border: #a6d89e;
+    --zone-green-text: #1c4518;
 
-        .login-title {
-            font-family: 'Chewy', cursive;
-        }
+    --zone-yellow: #fee597;
+    --zone-yellow-border: #fcd25e;
+    --zone-yellow-text: #574000;
 
-        .login-cloud-img {
-            width: 130px;
-            height: auto;
-            display: block;
-            margin: 0 auto 12px auto;
-            border: none;
-            background: transparent;
-        }
+    --zone-low-yellow: #fcab76;
+    --zone-low-yellow-border: #f78d4b;
+    --zone-low-yellow-text: #521c00;
 
-        .btn-login {
-            background-color: #8ec4d4;
-        }
+    --zone-red: #fb6e75;
+    --zone-red-border: #f74851;
+    --zone-red-text: #590308;
+}
 
-        /* 3D Tactile Push Animation */
-        .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease; }
-        .btn-3d:active { transform: translateY(2px) scale(0.98); }
-
-/* Zone Glows & Base Colors */
-.zone-bg-Green { background-color: #c3eabd; color: #1c4518; border: 2px solid #a6d89e; }
-.zone-bg-Yellow { background-color: #fee597; color: #574000; border: 2px solid #fcd25e; }
-.zone-bg-Low-Yellow { background-color: #fcab76; color: #521c00; border: 2px solid #f78d4b; }
-.zone-bg-Red { background-color: #fb6e75; color: #590308; border: 2px solid #f74851; }
+/* Zone Backgrounds & Borders */
+.zone-bg-Green { background-color: var(--zone-green); color: var(--zone-green-text); border: 2px solid var(--zone-green-border); }
+.zone-bg-Yellow { background-color: var(--zone-yellow); color: var(--zone-yellow-text); border: 2px solid var(--zone-yellow-border); }
+.zone-bg-Low-Yellow { background-color: var(--zone-low-yellow); color: var(--zone-low-yellow-text); border: 2px solid var(--zone-low-yellow-border); }
+.zone-bg-Red { background-color: var(--zone-red); color: var(--zone-red-text); border: 2px solid var(--zone-red-border); }
 .zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
 
-.zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #a6d89e; border-color: #72b367; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #fcd25e; border-color: #e0af2b; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f78d4b; border-color: #d96923; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #f74851; border-color: #d1212a; transform: translateY(-2px); font-weight: 800; }
+/* Selected Zone Glows */
+.zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px var(--zone-green-border); border-color: #72b367; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px var(--zone-yellow-border); border-color: #e0af2b; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px var(--zone-low-yellow-border); border-color: #d96923; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px var(--zone-red-border); border-color: #d1212a; transform: translateY(-2px); font-weight: 800; }
 
 /* Active Bottom Navigation Button */
 .nav-btn-active {
@@ -291,9 +288,22 @@
                         <label class="block text-xs font-bold text-green-800 uppercase">Green Zone Protocol</label>
                         <textarea id="noteGreen" oninput="saveProtocolsWithToast()" placeholder="Green Zone instructions..." class="w-full border border-green-200 rounded-2xl p-3 text-xs bg-green-50/40 focus:outline-none focus:bg-white"></textarea>
                     </div>
+                  <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase" style="color: var(--zone-green-text);">Green Zone Protocol</label>
+                        <textarea id="noteGreen" oninput="saveProtocolsWithToast()" placeholder="Green Zone instructions..." class="w-full border rounded-2xl p-3 text-xs focus:outline-none focus:bg-white" style="background-color: color-mix(in srgb, var(--zone-green) 35%, transparent); border-color: var(--zone-green-border);"></textarea>
+                    </div>
                     <div class="space-y-2">
-                        <label class="block text-xs font-bold text-yellow-800 uppercase">Yellow Zone Protocol</label>
-                        <textarea id="noteYellow" oninput="saveProtocolsWithToast()" placeholder="Yellow Zone instructions..." class="w-full border border-yellow-200 rounded-2xl p-3 text-xs bg-yellow-50/40 focus:outline-none focus:bg-white"></textarea>
+                        <label class="block text-xs font-bold uppercase" style="color: var(--zone-yellow-text);">Yellow Zone Protocol</label>
+                        <textarea id="noteYellow" oninput="saveProtocolsWithToast()" placeholder="Yellow Zone instructions..." class="w-full border rounded-2xl p-3 text-xs focus:outline-none focus:bg-white" style="background-color: color-mix(in srgb, var(--zone-yellow) 35%, transparent); border-color: var(--zone-yellow-border);"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase" style="color: var(--zone-low-yellow-text);">Low Yellow Zone Protocol</label>
+                        <textarea id="noteLowYellow" oninput="saveProtocolsWithToast()" placeholder="Low Yellow Zone instructions..." class="w-full border rounded-2xl p-3 text-xs focus:outline-none focus:bg-white" style="background-color: color-mix(in srgb, var(--zone-low-yellow) 35%, transparent); border-color: var(--zone-low-yellow-border);"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase" style="color: var(--zone-red-text);">Red Zone Protocol</label>
+                        <textarea id="noteRed" oninput="saveProtocolsWithToast()" placeholder="Red Zone instructions..." class="w-full border rounded-2xl p-3 text-xs focus:outline-none focus:bg-white" style="background-color: color-mix(in srgb, var(--zone-red) 35%, transparent); border-color: var(--zone-red-border);"></textarea>
+                    </div>
                     </div>
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-orange-800 uppercase">Low Yellow Zone Protocol</label>
@@ -1553,15 +1563,22 @@
             const zCounts = { Green: 0, Yellow: 0, 'Low Yellow': 0, Red: 0 };
             filteredLogs.forEach(l => { if (l.zone && zCounts[l.zone] !== undefined) zCounts[l.zone]++; });
 
-       const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
+      const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
             if (zoneChartInst) zoneChartInst.destroy();
+
+            const cssStyles = getComputedStyle(document.documentElement);
+            const gColor = cssStyles.getPropertyValue('--zone-green').trim() || '#c3eabd';
+            const yColor = cssStyles.getPropertyValue('--zone-yellow').trim() || '#fee597';
+            const lyColor = cssStyles.getPropertyValue('--zone-low-yellow').trim() || '#fcab76';
+            const rColor = cssStyles.getPropertyValue('--zone-red').trim() || '#fb6e75';
+
             zoneChartInst = new Chart(ctxZone, {
                 type: 'doughnut',
                 data: {
                     labels: ['Green', 'Yellow', 'Low Yellow', 'Red'],
                     datasets: [{ 
                         data: [zCounts.Green, zCounts.Yellow, zCounts['Low Yellow'], zCounts.Red], 
-                        backgroundColor: ['#c3eabd', '#fee597', '#fcab76', '#fb6e75'] 
+                        backgroundColor: [gColor, yColor, lyColor, rColor]
                     }]
                 },
                 options: { plugins: { legend: { position: 'bottom' } } }
