@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Asthma Log">
-   <link rel="apple-touch-icon" href="images/airling-cloud.png">
+    <link rel="apple-touch-icon" href="images/airling-cloud.png">
     <link rel="icon" type="image/png" href="images/airling-cloud.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +18,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-      body { font-family: 'DM Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         .login-title {
             font-family: 'Chewy', cursive;
@@ -41,29 +41,29 @@
         .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease; }
         .btn-3d:active { transform: translateY(2px) scale(0.98); }
 
-/* Zone Glows & Base Colors */
-.zone-bg-Green { background-color: #c3eabd; color: #1c4518; border: 2px solid #a6d89e; }
-.zone-bg-Yellow { background-color: #fee597; color: #574000; border: 2px solid #fcd25e; }
-.zone-bg-Low-Yellow { background-color: #fcab76; color: #521c00; border: 2px solid #f78d4b; }
-.zone-bg-Red { background-color: #fb6e75; color: #590308; border: 2px solid #f74851; }
-.zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
+        /* Zone Glows & Base Colors */
+        .zone-bg-Green { background-color: #c3eabd; color: #1c4518; border: 2px solid #a6d89e; }
+        .zone-bg-Yellow { background-color: #fee597; color: #574000; border: 2px solid #fcd25e; }
+        .zone-bg-Low-Yellow { background-color: #fcab76; color: #521c00; border: 2px solid #f78d4b; }
+        .zone-bg-Red { background-color: #fb6e75; color: #590308; border: 2px solid #f74851; }
+        .zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
 
-.zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #a6d89e; border-color: #72b367; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #fcd25e; border-color: #e0af2b; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f78d4b; border-color: #d96923; transform: translateY(-2px); font-weight: 800; }
-.zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #f74851; border-color: #d1212a; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #a6d89e; border-color: #72b367; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #fcd25e; border-color: #e0af2b; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f78d4b; border-color: #d96923; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #f74851; border-color: #d1212a; transform: translateY(-2px); font-weight: 800; }
 
-/* Active Bottom Navigation Button */
-.nav-btn-active {
-    color: #4f46e5 !important;
-    font-weight: 800 !important;
-    transform: translateY(-3px);
-    box-shadow: 0 0 12px #e8dbf3;
-    background-color: #ffffff;
-}
-.nav-btn-active span:first-child {
-    transform: scale(1.15);
-}
+        /* Active Bottom Navigation Button */
+        .nav-btn-active {
+            color: #4f46e5 !important;
+            font-weight: 800 !important;
+            transform: translateY(-3px);
+            box-shadow: 0 0 12px #e8dbf3;
+            background-color: #ffffff;
+        }
+        .nav-btn-active span:first-child {
+            transform: scale(1.15);
+        }
 
         .chip-active { background-color: #e0e7ff !important; border: 2px solid #6366f1 !important; color: #3730a3 !important; font-weight: 700 !important; }
         
@@ -105,20 +105,6 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
             text-align: center;
             border: 1px solid #e2e8f0;
-        }
-
-        .avatar-container {
-            width: 88px;
-            height: 88px;
-            background: #e0e7ff;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 44px;
-            overflow: hidden;
-            border: 2px solid #c7d2fe;
         }
 
         .recovery-box {
@@ -218,7 +204,7 @@
                 
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-5">
                     <div class="border-b border-slate-100 pb-2.5">
-    <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
+                        <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
                     </div>
 
                     <div>
@@ -333,23 +319,29 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
-                            <input type="date" id="analyticsStartDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase">End Date</label>
-                            <input type="date" id="analyticsEndDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
+                    <div class="grid grid-cols-6 gap-1 text-xs pt-1">
+                        <button type="button" onclick="setAnalyticsRange(7)" id="range-7" class="py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d text-center text-[11px]">7D</button>
+                        <button type="button" onclick="setAnalyticsRange(30)" id="range-30" class="py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]">30D</button>
+                        <button type="button" onclick="setAnalyticsRange(90)" id="range-90" class="py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]">90D</button>
+                        <button type="button" onclick="setAnalyticsRange(365)" id="range-365" class="py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]">1Y</button>
+                        <button type="button" onclick="setAnalyticsRange(0)" id="range-0" class="py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]">All</button>
+                        <button type="button" onclick="setAnalyticsRange('custom')" id="range-custom" class="py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]">Custom</button>
+                    </div>
+
+                    <div id="customDateContainer" class="hidden pt-2 border-t border-slate-100 space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
+                                <input type="date" id="analyticsStartDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50 font-medium">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase">End Date</label>
+                                <input type="date" id="analyticsEndDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50 font-medium">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-1.5 text-xs pt-1">
-                        <button type="button" onclick="setAnalyticsRange(7)" id="range-7" class="px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d">7D</button>
-                        <button type="button" onclick="setAnalyticsRange(30)" id="range-30" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">30D</button>
-                        <button type="button" onclick="setAnalyticsRange(90)" id="range-90" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">90D</button>
-                        <button type="button" onclick="setAnalyticsRange(0)" id="range-0" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">All</button>
-                    </div>
+                    <div id="selectedRangeDisplay" class="text-[11px] font-bold text-indigo-700 bg-indigo-50/80 px-3 py-1.5 rounded-xl text-center border border-indigo-100 hidden"></div>
                 </div>
 
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
@@ -370,9 +362,7 @@
                         <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-3 inline-block"></span> Sev.</span>
                     </div>
 
-                    <div class="overflow-x-auto pb-2 pt-1">
-                        <div id="contribMatrixRows" class="space-y-3 min-w-max"></div>
-                    </div>
+                    <div id="contribMatrixRows" class="space-y-3 pt-1"></div>
 
                     <div id="contribDrilldownPanel" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2">
                         <div class="flex justify-between items-center border-b border-slate-200 pb-2">
@@ -650,7 +640,7 @@
         let toastTimeout = null;
         let actionPlanImgData = null;
 
-/* AUTHENTICATION CODE */
+        /* AUTHENTICATION CODE */
         const DEFAULT_PIN_HASH = '1693c1';
         
         async function hashString(str) {
@@ -727,7 +717,6 @@
             
             loadState();
             initDoseTime();
-            initAnalyticsDateInputs();
             renderAll();
         }
 
@@ -811,14 +800,6 @@
 
         function initDoseTime() {
             document.getElementById('medDoseTime').value = new Date().toTimeString().slice(0, 5);
-        }
-
-        function initAnalyticsDateInputs() {
-            const today = new Date();
-            const weekAgo = new Date();
-            weekAgo.setDate(today.getDate() - 7);
-            document.getElementById('analyticsEndDate').value = today.toLocaleDateString('en-CA');
-            document.getElementById('analyticsStartDate').value = weekAgo.toLocaleDateString('en-CA');
         }
 
         function getLogForDate(dateStr) {
@@ -1498,17 +1479,31 @@
         function addTrigFromSettings() { const val = document.getElementById('settingNewTrigInput').value.trim(); if(val){ triggers.push({name:val, active:true}); document.getElementById('settingNewTrigInput').value=''; saveState(); renderAll(); }}
         function addActFromSettings() { const val = document.getElementById('settingNewActInput').value.trim(); if(val){ activities.push({name:val, active:true}); document.getElementById('settingNewActInput').value=''; saveState(); renderAll(); }}
 
-        let currentAnalyticsDays = 7;
+        let currentAnalyticsRange = 7;
 
-        function setAnalyticsRange(days) {
-            currentAnalyticsDays = days;
-            [7, 30, 90, 0].forEach(d => {
-                const btn = document.getElementById(`range-${d}`);
+        function setAnalyticsRange(range) {
+            currentAnalyticsRange = range;
+            ['7', '30', '90', '365', '0', 'custom'].forEach(r => {
+                const btn = document.getElementById(`range-${r}`);
                 if (btn) {
-                    if (d === days) btn.className = 'px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d';
-                    else btn.className = 'px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d';
+                    if (r == range) btn.className = 'py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d text-center text-[11px]';
+                    else btn.className = 'py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d text-center text-[11px]';
                 }
             });
+
+            const customContainer = document.getElementById('customDateContainer');
+            if (range === 'custom') {
+                customContainer.classList.remove('hidden');
+                if (!document.getElementById('analyticsStartDate').value) {
+                    const today = new Date();
+                    const weekAgo = new Date();
+                    weekAgo.setDate(today.getDate() - 6);
+                    document.getElementById('analyticsEndDate').value = today.toLocaleDateString('en-CA');
+                    document.getElementById('analyticsStartDate').value = weekAgo.toLocaleDateString('en-CA');
+                }
+            } else {
+                customContainer.classList.add('hidden');
+            }
             renderAnalytics();
         }
 
@@ -1525,35 +1520,53 @@
 
         function renderAnalytics() {
             let filteredLogs = logs;
-            const startVal = document.getElementById('analyticsStartDate').value;
-            const endVal = document.getElementById('analyticsEndDate').value;
-
             let startDate = new Date();
+            startDate.setHours(0, 0, 0, 0);
             let endDate = new Date();
+            endDate.setHours(23, 59, 59, 999);
 
-            if (startVal && endVal) {
-                startDate = new Date(`${startVal}T00:00:00`);
-                endDate = new Date(`${endVal}T23:59:59`);
-                filteredLogs = logs.filter(l => {
-                    const d = new Date(l.timestamp).toLocaleDateString('en-CA');
-                    return d >= startVal && d <= endVal;
-                });
-            } else if (currentAnalyticsDays > 0) {
-                startDate.setDate(endDate.getDate() - (currentAnalyticsDays - 1));
-                filteredLogs = logs.filter(l => new Date(l.timestamp) >= startDate);
-            } else {
-                if (logs.length > 0) {
-                    const timestamps = logs.map(l => new Date(l.timestamp).getTime());
-                    startDate = new Date(Math.min(...timestamps));
+            const displayEl = document.getElementById('selectedRangeDisplay');
+
+            if (currentAnalyticsRange === 'custom') {
+                const startVal = document.getElementById('analyticsStartDate').value;
+                const endVal = document.getElementById('analyticsEndDate').value;
+
+                if (startVal && endVal) {
+                    startDate = new Date(`${startVal}T00:00:00`);
+                    endDate = new Date(`${endVal}T23:59:59`);
+
+                    filteredLogs = logs.filter(l => {
+                        const d = new Date(l.timestamp).toLocaleDateString('en-CA');
+                        return d >= startVal && d <= endVal;
+                    });
+
+                    const startFormatted = new Date(`${startVal}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+                    const endFormatted = new Date(`${endVal}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+                    displayEl.innerText = `📅 ${startFormatted} – ${endFormatted}`;
+                    displayEl.classList.remove('hidden');
                 } else {
-                    startDate.setDate(endDate.getDate() - 30);
+                    displayEl.classList.add('hidden');
+                }
+            } else {
+                displayEl.classList.add('hidden');
+                if (currentAnalyticsRange > 0) {
+                    startDate.setDate(endDate.getDate() - (currentAnalyticsRange - 1));
+                    filteredLogs = logs.filter(l => new Date(l.timestamp) >= startDate);
+                } else {
+                    if (logs.length > 0) {
+                        const timestamps = logs.map(l => new Date(l.timestamp).getTime());
+                        startDate = new Date(Math.min(...timestamps));
+                        startDate.setHours(0, 0, 0, 0);
+                    } else {
+                        startDate.setDate(endDate.getDate() - 29);
+                    }
                 }
             }
 
             const zCounts = { Green: 0, Yellow: 0, 'Low Yellow': 0, Red: 0 };
             filteredLogs.forEach(l => { if (l.zone && zCounts[l.zone] !== undefined) zCounts[l.zone]++; });
 
-       const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
+            const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
             if (zoneChartInst) zoneChartInst.destroy();
             zoneChartInst = new Chart(ctxZone, {
                 type: 'doughnut',
@@ -1593,7 +1606,8 @@
                 timeWindows.push({
                     startStr: winStart.toLocaleDateString('en-CA'),
                     endStr: winEnd.toLocaleDateString('en-CA'),
-                    label: mode === 'day' ? winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' }) : `${winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' })} - ${winEnd.toLocaleDateString([], { month: 'numeric', day: 'numeric' })}`
+                    label: mode === 'day' ? winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' }) : `${winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' })} - ${winEnd.toLocaleDateString([], { month: 'numeric', day: 'numeric' })}`,
+                    dayName: winStart.toLocaleDateString([], { weekday: 'narrow' })
                 });
 
                 if (mode === 'day') curr.setDate(curr.getDate() + 1);
@@ -1606,16 +1620,16 @@
             container.innerHTML = '';
 
             activeSymps.forEach(s => {
-                const rowEl = document.createElement('div');
-                rowEl.className = 'flex items-center gap-3';
+                const cardEl = document.createElement('div');
+                cardEl.className = 'p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2';
 
-                const labelEl = document.createElement('div');
-                labelEl.className = 'w-32 text-xs font-bold text-slate-800 truncate shrink-0';
-                labelEl.innerText = s.name;
-                rowEl.appendChild(labelEl);
+                const headerEl = document.createElement('div');
+                headerEl.className = 'flex justify-between items-center text-xs font-bold text-slate-800';
+                headerEl.innerHTML = `<span>${s.name}</span><span class="text-[10px] text-slate-400 font-normal">${mode === 'day' ? timeWindows.length + '-Day History' : 'Overview'}</span>`;
+                cardEl.appendChild(headerEl);
 
                 const blocksContainer = document.createElement('div');
-                blocksContainer.className = 'flex gap-1.5 items-center';
+                blocksContainer.className = (mode === 'day' && timeWindows.length === 7) ? 'grid grid-cols-7 gap-1.5 pt-1' : 'flex flex-wrap gap-1.5 pt-1';
 
                 timeWindows.forEach((win) => {
                     let maxSevVal = 0;
@@ -1630,14 +1644,26 @@
                         if (v > maxSevVal) maxSevVal = v;
                     });
 
+                    const colWrapper = document.createElement('div');
+                    colWrapper.className = 'flex flex-col items-center gap-1';
+
+                    if (mode === 'day' && timeWindows.length <= 14) {
+                        const dateLbl = document.createElement('span');
+                        dateLbl.className = 'text-[9px] font-bold text-slate-400 uppercase leading-none';
+                        dateLbl.innerText = win.dayName;
+                        colWrapper.appendChild(dateLbl);
+                    }
+
                     const block = document.createElement('div');
-                    block.className = `w-6 h-6 rounded-lg contrib-block-${maxSevVal} shrink-0 cursor-pointer btn-3d flex items-center justify-center text-[9px] font-bold text-slate-700/60`;
+                    block.className = `w-full h-7 rounded-lg contrib-block-${maxSevVal} cursor-pointer btn-3d flex items-center justify-center text-[9px] font-bold text-slate-700/60`;
                     block.onclick = () => renderDrilldown(win, s.name, logsInWin);
-                    blocksContainer.appendChild(block);
+
+                    colWrapper.appendChild(block);
+                    blocksContainer.appendChild(colWrapper);
                 });
 
-                rowEl.appendChild(blocksContainer);
-                container.appendChild(rowEl);
+                cardEl.appendChild(blocksContainer);
+                container.appendChild(cardEl);
             });
         }
 
