@@ -336,64 +336,55 @@
             <div id="analyticsTab" class="tab-content hidden space-y-5">
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
                     <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Time Range</h3>
+                        <h3 class="font-bold text-slate-900 text-sm">📅 Time Range</h3>
                         <div class="flex gap-2">
                             <button type="button" onclick="exportCSV()" class="text-[11px] font-bold bg-slate-100 border text-slate-700 px-2.5 py-1 rounded-xl btn-3d">📊 Export CSV</button>
                             <button type="button" onclick="exportPDF()" class="text-[11px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 px-2.5 py-1 rounded-xl btn-3d">📄 Export PDF</button>
                         </div>
                     </div>
+                    
+                    <!-- Time Range Pills -->
+                    <div class="grid grid-cols-6 gap-1 bg-slate-100 p-1 rounded-2xl text-[11px] font-bold text-center">
+                        <button type="button" onclick="setAnalyticsRange('7D')" id="range-btn-7D" class="range-btn py-1.5 rounded-xl bg-white text-indigo-600 shadow-xs transition">7D</button>
+                        <button type="button" onclick="setAnalyticsRange('30D')" id="range-btn-30D" class="range-btn py-1.5 rounded-xl text-slate-500 transition">30D</button>
+                        <button type="button" onclick="setAnalyticsRange('90D')" id="range-btn-90D" class="range-btn py-1.5 rounded-xl text-slate-500 transition">90D</button>
+                        <button type="button" onclick="setAnalyticsRange('1Y')" id="range-btn-1Y" class="range-btn py-1.5 rounded-xl text-slate-500 transition">1Y</button>
+                        <button type="button" onclick="setAnalyticsRange('All')" id="range-btn-All" class="range-btn py-1.5 rounded-xl text-slate-500 transition">All</button>
+                        <button type="button" onclick="setAnalyticsRange('Custom')" id="range-btn-Custom" class="range-btn py-1.5 rounded-xl text-slate-500 transition">Custom</button>
+                    </div>
 
-                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
-                            <input type="date" id="analyticsStartDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase">End Date</label>
-                            <input type="date" id="analyticsEndDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
+                    <!-- Custom Date Range Picker (Hidden by default) -->
+                    <div id="customDateContainer" class="hidden pt-2 border-t border-slate-100 space-y-2">
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <label class="block font-medium text-slate-500 mb-1">Start Date</label>
+                                <input type="date" id="analyticsCustomStart" onchange="applyCustomRange()" class="w-full border border-slate-200 rounded-xl p-2 bg-slate-50 text-slate-800 font-semibold focus:outline-none focus:bg-white focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-500 mb-1">End Date</label>
+                                <input type="date" id="analyticsCustomEnd" onchange="applyCustomRange()" class="w-full border border-slate-200 rounded-xl p-2 bg-slate-50 text-slate-800 font-semibold focus:outline-none focus:bg-white focus:border-indigo-500">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="flex gap-1.5 text-xs pt-1">
-                        <button type="button" onclick="setAnalyticsRange(7)" id="range-7" class="px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d">7D</button>
-                        <button type="button" onclick="setAnalyticsRange(30)" id="range-30" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">30D</button>
-                        <button type="button" onclick="setAnalyticsRange(90)" id="range-90" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">90D</button>
-                        <button type="button" onclick="setAnalyticsRange(0)" id="range-0" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">All</button>
+                    <!-- Non-Overlapping Custom Date Display Badge -->
+                    <div id="customRangeBadge" class="hidden flex items-center justify-between bg-indigo-50/80 border border-indigo-100 rounded-2xl p-2.5 text-xs font-semibold text-indigo-900 gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-400 text-[10px] uppercase font-bold">Start:</span>
+                            <span id="badgeStartDate" class="bg-white px-2 py-0.5 rounded-lg border border-indigo-100 font-bold text-indigo-700 text-xs">--</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-slate-400 text-[10px] uppercase font-bold">End:</span>
+                            <span id="badgeEndDate" class="bg-white px-2 py-0.5 rounded-lg border border-indigo-100 font-bold text-indigo-700 text-xs">--</span>
+                        </div>
                     </div>
                 </div>
-
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Zone Breakdown</h3>
                     <canvas id="zoneChartCanvas"></canvas>
                 </div>
 
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <div class="flex justify-between items-center">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Symptom Severity Timeline</h3>
-                        <span id="contribGranularityBadge" class="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">Daily View</span>
-                    </div>
-
-                    <div class="flex gap-3 text-[10px] font-semibold text-slate-500 pt-1 border-t border-slate-100">
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-0 inline-block"></span> None</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-1 inline-block"></span> Mild</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-2 inline-block"></span> Mod.</span>
-                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-3 inline-block"></span> Sev.</span>
-                    </div>
-
-                    <div class="overflow-x-auto pb-2 pt-1">
-                        <div id="contribMatrixRows" class="space-y-3 min-w-max"></div>
-                    </div>
-
-                    <div id="contribDrilldownPanel" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2">
-                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
-                            <strong id="drilldownTitle" class="text-slate-900 font-bold">Window Details</strong>
-                            <button type="button" onclick="document.getElementById('contribDrilldownPanel').classList.add('hidden')" class="text-slate-400 font-bold">&times;</button>
-                        </div>
-                        <div id="drilldownBody" class="space-y-1 text-slate-700"></div>
-                    </div>
-                </div>
-            </div>
-
+                <div id="symptomTimelineContainer"></div>
             <div id="settingsTab" class="tab-content hidden space-y-5">
                 <p class="text-xs text-slate-400 px-1 font-medium">💡 Swipe left on any item to reveal the delete button.</p>
 
@@ -1508,62 +1499,94 @@
         function addTrigFromSettings() { const val = document.getElementById('settingNewTrigInput').value.trim(); if(val){ triggers.push({name:val, active:true}); document.getElementById('settingNewTrigInput').value=''; saveState(); renderAll(); }}
         function addActFromSettings() { const val = document.getElementById('settingNewActInput').value.trim(); if(val){ activities.push({name:val, active:true}); document.getElementById('settingNewActInput').value=''; saveState(); renderAll(); }}
 
-        let currentAnalyticsDays = 7;
+        let currentAnalyticsRange = '7D';
 
-        function setAnalyticsRange(days) {
-            currentAnalyticsDays = days;
-            [7, 30, 90, 0].forEach(d => {
-                const btn = document.getElementById(`range-${d}`);
-                if (btn) {
-                    if (d === days) btn.className = 'px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d';
-                    else btn.className = 'px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d';
-                }
+        function setAnalyticsRange(range) {
+            currentAnalyticsRange = range;
+
+            document.querySelectorAll('.range-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'text-indigo-600', 'shadow-xs');
+                btn.classList.add('text-slate-500');
             });
+
+            const activeBtn = document.getElementById(`range-btn-${range}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-500');
+                activeBtn.classList.add('bg-white', 'text-indigo-600', 'shadow-xs');
+            }
+
+            const customContainer = document.getElementById('customDateContainer');
+            const customBadge = document.getElementById('customRangeBadge');
+
+            if (range === 'Custom') {
+                if (customContainer) customContainer.classList.remove('hidden');
+                if (customBadge) customBadge.classList.remove('hidden');
+            } else {
+                if (customContainer) customContainer.classList.add('hidden');
+                if (customBadge) customBadge.classList.add('hidden');
+            }
+
             renderAnalytics();
         }
 
-        function applyCustomAnalyticsDates() {
-            renderAnalytics();
-        }
+        function applyCustomRange() {
+            const startVal = document.getElementById('analyticsCustomStart')?.value;
+            const endVal = document.getElementById('analyticsCustomEnd')?.value;
 
-        function sevToVal(sevStr) {
-            if (sevStr === 'Mild') return 1;
-            if (sevStr === 'Moderate') return 2;
-            if (sevStr === 'Severe') return 3;
-            return 0;
+            const startBadge = document.getElementById('badgeStartDate');
+            const endBadge = document.getElementById('badgeEndDate');
+
+            if (startBadge) {
+                startBadge.innerText = startVal ? new Date(`${startVal}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : '--';
+            }
+            if (endBadge) {
+                endBadge.innerText = endVal ? new Date(`${endVal}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }) : '--';
+            }
+
+            if (startVal && endVal) {
+                renderAnalytics();
+            }
         }
 
         function renderAnalytics() {
             let filteredLogs = logs;
-            const startVal = document.getElementById('analyticsStartDate').value;
-            const endVal = document.getElementById('analyticsEndDate').value;
+            const now = new Date();
 
-            let startDate = new Date();
-            let endDate = new Date();
+            if (currentAnalyticsRange === '7D') {
+                const cutoff = new Date();
+                cutoff.setDate(now.getDate() - 7);
+                filteredLogs = logs.filter(l => l.timestamp && new Date(l.timestamp) >= cutoff);
+            } else if (currentAnalyticsRange === '30D') {
+                const cutoff = new Date();
+                cutoff.setDate(now.getDate() - 30);
+                filteredLogs = logs.filter(l => l.timestamp && new Date(l.timestamp) >= cutoff);
+            } else if (currentAnalyticsRange === '90D') {
+                const cutoff = new Date();
+                cutoff.setDate(now.getDate() - 90);
+                filteredLogs = logs.filter(l => l.timestamp && new Date(l.timestamp) >= cutoff);
+            } else if (currentAnalyticsRange === '1Y') {
+                const cutoff = new Date();
+                cutoff.setFullYear(now.getFullYear() - 1);
+                filteredLogs = logs.filter(l => l.timestamp && new Date(l.timestamp) >= cutoff);
+            } else if (currentAnalyticsRange === 'Custom') {
+                const startVal = document.getElementById('analyticsCustomStart')?.value;
+                const endVal = document.getElementById('analyticsCustomEnd')?.value;
 
-            if (startVal && endVal) {
-                startDate = new Date(`${startVal}T00:00:00`);
-                endDate = new Date(`${endVal}T23:59:59`);
-                filteredLogs = logs.filter(l => {
-                    const d = new Date(l.timestamp).toLocaleDateString('en-CA');
-                    return d >= startVal && d <= endVal;
-                });
-            } else if (currentAnalyticsDays > 0) {
-                startDate.setDate(endDate.getDate() - (currentAnalyticsDays - 1));
-                filteredLogs = logs.filter(l => new Date(l.timestamp) >= startDate);
-            } else {
-                if (logs.length > 0) {
-                    const timestamps = logs.map(l => new Date(l.timestamp).getTime());
-                    startDate = new Date(Math.min(...timestamps));
-                } else {
-                    startDate.setDate(endDate.getDate() - 30);
+                if (startVal && endVal) {
+                    const startCutoff = new Date(`${startVal}T00:00:00`);
+                    const endCutoff = new Date(`${endVal}T23:59:59`);
+                    filteredLogs = logs.filter(l => {
+                        if (!l.timestamp) return false;
+                        const logDate = new Date(l.timestamp);
+                        return logDate >= startCutoff && logDate <= endCutoff;
+                    });
                 }
             }
 
             const zCounts = { Green: 0, Yellow: 0, 'Low Yellow': 0, Red: 0 };
             filteredLogs.forEach(l => { if (l.zone && zCounts[l.zone] !== undefined) zCounts[l.zone]++; });
 
-      const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
+            const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
             if (zoneChartInst) zoneChartInst.destroy();
 
             const cssStyles = getComputedStyle(document.documentElement);
@@ -1584,112 +1607,89 @@
                 options: { plugins: { legend: { position: 'bottom' } } }
             });
 
-            const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-            let mode = 'day';
-            if (diffDays > 30 && diffDays <= 180) mode = 'week';
-            if (diffDays > 180) mode = 'month';
+            renderSymptomTimeline();
+        }
 
-            document.getElementById('contribGranularityBadge').innerText = mode === 'day' ? 'Daily View' : (mode === 'week' ? 'Weekly Macro View' : 'Monthly Macro View');
+        function renderSymptomTimeline() {
+            const container = document.getElementById('symptomTimelineContainer');
+            if (!container) return;
 
-            const timeWindows = [];
-            let curr = new Date(startDate);
-            while (curr <= endDate) {
-                let winStart = new Date(curr);
-                let winEnd = new Date(curr);
+            container.innerHTML = '';
 
-                if (mode === 'day') {
-                } else if (mode === 'week') {
-                    winEnd.setDate(winEnd.getDate() + 6);
-                    if (winEnd > endDate) winEnd = new Date(endDate);
-                } else {
-                    winEnd.setMonth(winEnd.getMonth() + 1);
-                    winEnd.setDate(winEnd.getDate() - 1);
-                    if (winEnd > endDate) winEnd = new Date(endDate);
-                }
-
-                timeWindows.push({
-                    startStr: winStart.toLocaleDateString('en-CA'),
-                    endStr: winEnd.toLocaleDateString('en-CA'),
-                    label: mode === 'day' ? winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' }) : `${winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' })} - ${winEnd.toLocaleDateString([], { month: 'numeric', day: 'numeric' })}`
+            const days = [];
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                days.push({
+                    dateStr: d.toLocaleDateString('en-CA'),
+                    dayName: d.toLocaleDateString([], { weekday: 'narrow' }),
+                    dayNum: d.getDate()
                 });
-
-                if (mode === 'day') curr.setDate(curr.getDate() + 1);
-                else if (mode === 'week') curr.setDate(curr.getDate() + 7);
-                else curr.setMonth(curr.getMonth() + 1);
             }
 
             const activeSymps = symptoms.filter(s => s.active);
-            const container = document.getElementById('contribMatrixRows');
-            container.innerHTML = '';
-
-            activeSymps.forEach(s => {
-                const rowEl = document.createElement('div');
-                rowEl.className = 'flex items-center gap-3';
-
-                const labelEl = document.createElement('div');
-                labelEl.className = 'w-32 text-xs font-bold text-slate-800 truncate shrink-0';
-                labelEl.innerText = s.name;
-                rowEl.appendChild(labelEl);
-
-                const blocksContainer = document.createElement('div');
-                blocksContainer.className = 'flex gap-1.5 items-center';
-
-                timeWindows.forEach((win) => {
-                    let maxSevVal = 0;
-                    const logsInWin = logs.filter(l => {
-                        const d = new Date(l.timestamp).toLocaleDateString('en-CA');
-                        return d >= win.startStr && d <= win.endStr;
-                    });
-
-                    logsInWin.forEach(l => {
-                        const sevStr = l.symptomMap ? l.symptomMap[s.name] : null;
-                        const v = sevToVal(sevStr);
-                        if (v > maxSevVal) maxSevVal = v;
-                    });
-
-                    const block = document.createElement('div');
-                    block.className = `w-6 h-6 rounded-lg contrib-block-${maxSevVal} shrink-0 cursor-pointer btn-3d flex items-center justify-center text-[9px] font-bold text-slate-700/60`;
-                    block.onclick = () => renderDrilldown(win, s.name, logsInWin);
-                    blocksContainer.appendChild(block);
-                });
-
-                rowEl.appendChild(blocksContainer);
-                container.appendChild(rowEl);
-            });
-        }
-
-        function renderDrilldown(win, symptomName, logsInWin) {
-            const panel = document.getElementById('contribDrilldownPanel');
-            const title = document.getElementById('drilldownTitle');
-            const body = document.getElementById('drilldownBody');
-
-            title.innerText = `${symptomName}: ${win.label}`;
-            
-            if (!logsInWin.length) {
-                body.innerHTML = '<div class="text-slate-400 italic">No log entries recorded in this time window.</div>';
-            } else {
-                body.innerHTML = logsInWin.map(l => {
-                    const dStr = new Date(l.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
-                    const sev = (l.symptomMap && l.symptomMap[symptomName]) ? l.symptomMap[symptomName] : 'None';
-                    const trigs = (l.triggers || []).join(', ') || 'None';
-                    
-                    const medEntries = [];
-                    Object.entries(l.medDoses || {}).forEach(([medId, times]) => {
-                        const med = meds.find(m => m.id == medId);
-                        if (med && times && times.length) medEntries.push(`${med.name} (${times.join(', ')})`);
-                    });
-
-                    return `
-                        <div class="border-b border-slate-200/60 pb-1.5 last:border-0">
-                            <div><strong>${dStr}:</strong> Severity: <span class="font-bold">${sev}</span> | Zone: ${l.zone || 'Unset'}</div>
-                            ${medEntries.length ? `<div class="text-[11px] text-slate-600">💊 Doses: ${medEntries.join('; ')} ${l.schoolInhaler ? '(+ School Inhaler)' : ''}</div>` : ''}
-                            ${trigs !== 'None' ? `<div class="text-[11px] text-slate-600">⚠️ Triggers: ${trigs}</div>` : ''}
-                        </div>
-                    `;
-                }).join('');
+            if (!activeSymps || activeSymps.length === 0) {
+                container.innerHTML = '<div class="bg-white p-4 rounded-3xl shadow-sm border border-slate-200"><p class="text-xs text-slate-400 italic">No active symptoms tracked.</p></div>';
+                return;
             }
 
-            panel.classList.remove('hidden');
+            const card = document.createElement('div');
+            card.className = 'bg-white p-4 rounded-3xl shadow-sm border border-slate-200 space-y-4';
+
+            let html = `
+                <div class="flex justify-between items-center pb-2 border-b border-slate-100">
+                    <h3 class="font-bold text-slate-900 text-sm">📈 Symptom Severity Timeline</h3>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase">Last 7 Days</span>
+                </div>
+                
+                <div class="grid grid-cols-[100px_1fr] gap-2 items-center text-center">
+                    <div class="text-left text-[10px] font-bold uppercase text-slate-400">Symptom</div>
+                    <div class="grid grid-cols-7 gap-1">
+                        ${days.map(d => `
+                            <div class="flex flex-col items-center">
+                                <span class="text-[9px] font-bold text-slate-400 uppercase">${d.dayName}</span>
+                                <span class="text-[10px] font-black text-slate-700">${d.dayNum}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                <div class="space-y-3 pt-1">
+            `;
+
+            activeSymps.forEach(s => {
+                html += `
+                    <div class="space-y-1">
+                        <div class="text-xs font-bold text-slate-800 truncate">${s.name}</div>
+                        <div class="grid grid-cols-7 gap-1">
+                            ${days.map(d => {
+                                const dayLog = logs.find(l => l.timestamp && new Date(l.timestamp).toLocaleDateString('en-CA') === d.dateStr);
+                                let zone = dayLog ? dayLog.zone : 'None';
+                                let hasSymptom = dayLog && dayLog.symptomMap && dayLog.symptomMap[s.name];
+
+                                let bgClass = 'zone-bg-None';
+                                if (hasSymptom) {
+                                    if (zone === 'Green') bgClass = 'zone-bg-Green';
+                                    else if (zone === 'Yellow') bgClass = 'zone-bg-Yellow';
+                                    else if (zone === 'Low Yellow') bgClass = 'zone-bg-Low-Yellow';
+                                    else if (zone === 'Red') bgClass = 'zone-bg-Red';
+                                    else bgClass = 'bg-slate-300 border-slate-400';
+                                }
+
+                                return `
+                                    <div class="h-7 rounded-xl ${bgClass} flex items-center justify-center transition-all shadow-2xs" title="${d.dateStr}: ${hasSymptom ? s.name + ' (' + hasSymptom + ')' : 'None'}">
+                                        ${hasSymptom ? '<span class="text-[9px]">•</span>' : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            card.innerHTML = html;
+            container.appendChild(card);
         }
 
         function exportCSV() {
