@@ -798,12 +798,16 @@
                     if (!l.zoneShifts) l.zoneShifts = [];
                 });
 
-                meds = JSON.parse(localStorage.getItem('asthma_meds_v4')) || [
+                const savedMeds = JSON.parse(localStorage.getItem('asthma_meds_v4'));
+                meds = (Array.isArray(savedMeds) && savedMeds.length > 0) ? savedMeds : [
                     { id: 1, name: 'Albuterol', active: true },
                     { id: 2, name: 'Asmanex', active: true }
                 ];
+
                 doctors = JSON.parse(localStorage.getItem('asthma_doctors')) || { pcp: '', pulm: '', nurse: '' };
-                activities = JSON.parse(localStorage.getItem('asthma_activities_v4')) || [
+
+                const savedActivities = JSON.parse(localStorage.getItem('asthma_activities_v4'));
+                activities = (Array.isArray(savedActivities) && savedActivities.length > 0) ? savedActivities : [
                     { name: '🏃 Active Play', active: true },
                     { name: '⚽ Sports / Running', active: true },
                     { name: '🏊 Swimming', active: true },
@@ -811,7 +815,9 @@
                     { name: '🚴 Bike Riding', active: true },
                     { name: '⛺ Outdoor Camping / Hiking', active: true }
                 ];
-                triggers = JSON.parse(localStorage.getItem('asthma_triggers_v4')) || [
+
+                const savedTriggers = JSON.parse(localStorage.getItem('asthma_triggers_v4'));
+                triggers = (Array.isArray(savedTriggers) && savedTriggers.length > 0) ? savedTriggers : [
                     { name: '🥶 Cold Air Exposure', active: true },
                     { name: '🤧 Cold / Post-Viral', active: true },
                     { name: '💨 High Wind', active: true },
@@ -819,7 +825,9 @@
                     { name: '🐱 Pet Dander', active: true },
                     { name: '🪵 Campfire Smoke', active: true }
                 ];
-                symptoms = JSON.parse(localStorage.getItem('asthma_symptoms_v4')) || [
+
+                const savedSymptoms = JSON.parse(localStorage.getItem('asthma_symptoms_v4'));
+                symptoms = (Array.isArray(savedSymptoms) && savedSymptoms.length > 0) ? savedSymptoms : [
                     { name: '🗣️ Coughing', active: true },
                     { name: '🌙 Worse Nighttime Coughing', active: true },
                     { name: '😴 Nighttime Waking', active: true },
