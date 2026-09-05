@@ -129,7 +129,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased pb-36">
 
-<div id="auth-overlay">
+    <div id="auth-overlay">
         <div class="auth-card">
             <img src="images/airling-cloud.png" alt="Airling Cloud" class="login-cloud-img">
             <h2 class="login-title text-4xl text-slate-900 mb-4">Airling</h2>
@@ -160,12 +160,12 @@
     </div>
 
     <div id="app-wrapper" class="hidden">
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 flex justify-between items-center shadow-xs">
-    <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2 leading-none">
-        <img src="images/airling-cloud.png" alt="Airling Cloud" class="w-8 h-auto">
-        <span class="login-title pt-1">Airling Asthma Tracker</span>
-    </h1>
-</header>
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 flex justify-between items-center shadow-xs">
+            <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2 leading-none">
+                <img src="images/airling-cloud.png" alt="Airling Cloud" class="w-8 h-auto">
+                <span class="login-title pt-1">Airling Asthma Tracker</span>
+            </h1>
+        </header>
 
         <div onclick="toggleModal('envModal', true)" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white px-4 py-3 shadow-md flex justify-between items-center cursor-pointer rounded-b-2xl mx-2 mt-1 active:opacity-95 transition">
             <div class="flex items-center gap-2.5 text-xs">
@@ -201,7 +201,6 @@
         <main class="max-w-md mx-auto p-4 space-y-6">
             
             <div id="journalTab" class="tab-content space-y-5">
-                
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-5">
                     <div class="border-b border-slate-100 pb-2.5">
                         <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
@@ -218,7 +217,6 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-1">
-                        
                         <button type="button" onclick="toggleModal('symptomsModal', true)" class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-left hover:bg-slate-100 btn-3d transition space-y-1">
                             <div class="flex justify-between items-center">
                                 <span class="text-xs font-bold text-slate-900">🩺 Symptoms</span>
@@ -250,7 +248,6 @@
                             </div>
                             <p id="actSubtext" class="text-[11px] text-slate-500 font-medium truncate">None logged</p>
                         </button>
-
                     </div>
                 </div>
 
@@ -377,7 +374,6 @@
             <div id="settingsTab" class="tab-content hidden space-y-5">
                 <p class="text-xs text-slate-400 px-1 font-medium">💡 Tap any header to expand or collapse. Swipe left on items to delete.</p>
 
-                <!-- Collapsible Doctor Directory -->
                 <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
                     <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
                         <span>📞 Doctor Directory Numbers</span>
@@ -390,7 +386,6 @@
                     </div>
                 </details>
 
-                <!-- Collapsible Manage Medications -->
                 <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
                     <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
                         <span>💊 Manage Medications</span>
@@ -405,7 +400,6 @@
                     </div>
                 </details>
 
-                <!-- Collapsible Manage Symptoms -->
                 <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
                     <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
                         <span>🩺 Manage Symptoms</span>
@@ -420,7 +414,6 @@
                     </div>
                 </details>
 
-                <!-- Collapsible Manage Triggers -->
                 <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
                     <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
                         <span>⚠️ Manage Triggers</span>
@@ -435,7 +428,6 @@
                     </div>
                 </details>
 
-                <!-- Collapsible Manage Activities -->
                 <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
                     <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
                         <span>🏃 Manage Activities</span>
@@ -450,7 +442,6 @@
                     </div>
                 </details>
 
-                <!-- Data Backup, Export & Restore -->
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
                     <h3 class="font-bold text-slate-900 text-sm">💾 Data Backup & Restore</h3>
                     <p class="text-xs text-slate-500 font-medium">Export full application state to iCloud Drive or restore data from a saved JSON file.</p>
@@ -466,7 +457,6 @@
                     </div>
                 </div>
 
-                <!-- Lock App Section -->
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
                     <button type="button" onclick="lockApp()" class="w-full bg-slate-100 border border-slate-200 text-slate-700 font-bold py-3 rounded-2xl text-xs btn-3d flex items-center justify-center gap-1.5">
                         🔒 Lock App
@@ -657,7 +647,7 @@
                 <button type="button" onclick="toggleModal('envModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close</button>
             </div>
         </div>
-<!-- Sunday Weekly Backup Reminder Modal -->
+
         <div id="sundayBackupModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
             <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl text-center">
                 <div class="text-4xl">☁️</div>
@@ -674,25 +664,26 @@
                 </div>
             </div>
         </div>
+
         <div class="fixed bottom-4 left-0 right-0 z-20 px-4">
-         <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
-    <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d nav-btn-active">
-        <span class="text-2xl leading-none transition-transform">📖</span>
-        <span>Journal</span>
-    </button>
-    <button type="button" onclick="switchTab('analyticsTab')" id="nav-analyticsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-        <span class="text-2xl leading-none transition-transform">📊</span>
-        <span>Analytics</span>
-    </button>
-    <button type="button" onclick="switchTab('planTab')" id="nav-planTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-        <span class="text-2xl leading-none transition-transform">📋</span>
-        <span>Plan</span>
-    </button>
-    <button type="button" onclick="switchTab('settingsTab')" id="nav-settingsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-        <span class="text-2xl leading-none transition-transform">⚙️</span>
-        <span>Settings</span>
-    </button>
-</nav>
+            <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
+                <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d nav-btn-active">
+                    <span class="text-2xl leading-none transition-transform">📖</span>
+                    <span>Journal</span>
+                </button>
+                <button type="button" onclick="switchTab('analyticsTab')" id="nav-analyticsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none transition-transform">📊</span>
+                    <span>Analytics</span>
+                </button>
+                <button type="button" onclick="switchTab('planTab')" id="nav-planTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none transition-transform">📋</span>
+                    <span>Plan</span>
+                </button>
+                <button type="button" onclick="switchTab('settingsTab')" id="nav-settingsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none transition-transform">⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </nav>
         </div>
     </div>
 
@@ -775,13 +766,12 @@
             }
         }
 
-   function unlockApp() {
+        function unlockApp() {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('app-wrapper').classList.remove('hidden');
             
             loadState();
             initDoseTime();
-            initAnalyticsDateInputs();
             renderAll();
             checkSundayBackupPrompt();
         }
@@ -913,7 +903,7 @@
             renderSettingsManager();
         }
 
-  function renderWeeklyRibbon() {
+        function renderWeeklyRibbon() {
             const container = document.getElementById('weeklyRibbonDays');
             container.innerHTML = '';
 
@@ -1792,6 +1782,7 @@
         function exportPDF() {
             window.print();
         }
+
         function getFormattedFilenameDate() {
             const today = new Date();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
