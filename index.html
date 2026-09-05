@@ -375,51 +375,99 @@
             </div>
 
             <div id="settingsTab" class="tab-content hidden space-y-5">
-                <p class="text-xs text-slate-400 px-1 font-medium">💡 Swipe left on any item to reveal the delete button.</p>
+                <p class="text-xs text-slate-400 px-1 font-medium">💡 Tap any header to expand or collapse. Swipe left on items to delete.</p>
 
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">📞 Doctor Directory Numbers</h3>
-                    <input type="tel" id="pcpNum" onchange="saveDoctors()" placeholder="PCP Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
-                    <input type="tel" id="pulmNum" onchange="saveDoctors()" placeholder="Pulmonologist Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
-                    <input type="tel" id="nurseNum" onchange="saveDoctors()" placeholder="Nurse Line Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
-                </div>
+                <!-- Collapsible Doctor Directory -->
+                <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
+                    <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>📞 Doctor Directory Numbers</span>
+                        <span class="text-slate-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="space-y-3 pt-4 border-t border-slate-100 mt-3">
+                        <input type="tel" id="pcpNum" onchange="saveDoctors()" placeholder="PCP Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                        <input type="tel" id="pulmNum" onchange="saveDoctors()" placeholder="Pulmonologist Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                        <input type="tel" id="nurseNum" onchange="saveDoctors()" placeholder="Nurse Line Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                    </div>
+                </details>
 
+                <!-- Collapsible Manage Medications -->
+                <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
+                    <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>💊 Manage Medications</span>
+                        <span class="text-slate-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="space-y-3 pt-4 border-t border-slate-100 mt-3">
+                        <div id="settingsMedList" class="space-y-2 overflow-hidden"></div>
+                        <div class="pt-2 border-t border-slate-100 flex gap-2">
+                            <input type="text" id="settingNewMedInput" placeholder="New medication..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                            <button type="button" onclick="addMedFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Collapsible Manage Symptoms -->
+                <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
+                    <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>🩺 Manage Symptoms</span>
+                        <span class="text-slate-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="space-y-3 pt-4 border-t border-slate-100 mt-3">
+                        <div id="settingsSympList" class="space-y-2 overflow-hidden"></div>
+                        <div class="pt-2 border-t border-slate-100 flex gap-2">
+                            <input type="text" id="settingNewSympInput" placeholder="New symptom..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                            <button type="button" onclick="addSympFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Collapsible Manage Triggers -->
+                <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
+                    <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>⚠️ Manage Triggers</span>
+                        <span class="text-slate-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="space-y-3 pt-4 border-t border-slate-100 mt-3">
+                        <div id="settingsTrigList" class="space-y-2 overflow-hidden"></div>
+                        <div class="pt-2 border-t border-slate-100 flex gap-2">
+                            <input type="text" id="settingNewTrigInput" placeholder="New trigger..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                            <button type="button" onclick="addTrigFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Collapsible Manage Activities -->
+                <details class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 group">
+                    <summary class="font-bold text-slate-900 text-sm cursor-pointer list-none flex justify-between items-center">
+                        <span>🏃 Manage Activities</span>
+                        <span class="text-slate-400 text-xs group-open:rotate-180 transition-transform">▼</span>
+                    </summary>
+                    <div class="space-y-3 pt-4 border-t border-slate-100 mt-3">
+                        <div id="settingsActList" class="space-y-2 overflow-hidden"></div>
+                        <div class="pt-2 border-t border-slate-100 flex gap-2">
+                            <input type="text" id="settingNewActInput" placeholder="New activity..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                            <button type="button" onclick="addActFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Data Backup, Export & Restore -->
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">💊 Manage Medications</h3>
-                    <div id="settingsMedList" class="space-y-2 overflow-hidden"></div>
-                    <div class="pt-2 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="settingNewMedInput" placeholder="New medication..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
-                        <button type="button" onclick="addMedFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                    <h3 class="font-bold text-slate-900 text-sm">💾 Data Backup & Restore</h3>
+                    <p class="text-xs text-slate-500 font-medium">Export full application state to iCloud Drive or restore data from a saved JSON file.</p>
+                    
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button type="button" onclick="exportJSON()" class="w-full bg-indigo-600 text-white py-2.5 rounded-2xl text-xs font-bold btn-3d">
+                            📤 Export to JSON
+                        </button>
+                        <input type="file" id="importJsonInput" accept=".json" onchange="importJSON(event)" class="hidden">
+                        <button type="button" onclick="document.getElementById('importJsonInput').click()" class="w-full bg-slate-100 border border-slate-200 text-slate-700 py-2.5 rounded-2xl text-xs font-bold btn-3d">
+                            📥 Restore Data
+                        </button>
                     </div>
                 </div>
 
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">🩺 Manage Symptoms</h3>
-                    <div id="settingsSympList" class="space-y-2 overflow-hidden"></div>
-                    <div class="pt-2 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="settingNewSympInput" placeholder="New symptom..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
-                        <button type="button" onclick="addSympFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">⚠️ Manage Triggers</h3>
-                    <div id="settingsTrigList" class="space-y-2 overflow-hidden"></div>
-                    <div class="pt-2 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="settingNewTrigInput" placeholder="New trigger..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
-                        <button type="button" onclick="addTrigFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
-                    </div>
-                </div>
-
-                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="font-bold text-slate-900 text-sm">🏃 Manage Activities</h3>
-                    <div id="settingsActList" class="space-y-2 overflow-hidden"></div>
-                    <div class="pt-2 border-t border-slate-100 flex gap-2">
-                        <input type="text" id="settingNewActInput" placeholder="New activity..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
-                        <button type="button" onclick="addActFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
-                    </div>
-                </div>
-              <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
+                <!-- Lock App Section -->
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
                     <button type="button" onclick="lockApp()" class="w-full bg-slate-100 border border-slate-200 text-slate-700 font-bold py-3 rounded-2xl text-xs btn-3d flex items-center justify-center gap-1.5">
                         🔒 Lock App
                     </button>
@@ -609,7 +657,23 @@
                 <button type="button" onclick="toggleModal('envModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close</button>
             </div>
         </div>
-
+<!-- Sunday Weekly Backup Reminder Modal -->
+        <div id="sundayBackupModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl text-center">
+                <div class="text-4xl">☁️</div>
+                <h3 class="font-bold text-slate-900 text-base">Weekly Backup Reminder</h3>
+                <p class="text-xs text-slate-600 font-medium leading-relaxed">It's time for your weekly backup! Save your complete tracker log and settings to iCloud Drive to keep your data safe.</p>
+                
+                <div class="space-y-2 pt-2">
+                    <button type="button" onclick="exportJSON(); toggleModal('sundayBackupModal', false);" class="w-full bg-indigo-600 text-white py-3 rounded-2xl text-xs font-bold btn-3d">
+                        Save & Export to iCloud
+                    </button>
+                    <button type="button" onclick="toggleModal('sundayBackupModal', false);" class="w-full bg-slate-100 text-slate-600 py-2.5 rounded-2xl text-xs font-bold btn-3d">
+                        Remind Me Later
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="fixed bottom-4 left-0 right-0 z-20 px-4">
          <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
     <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d nav-btn-active">
@@ -711,13 +775,15 @@
             }
         }
 
-        function unlockApp() {
+   function unlockApp() {
             document.getElementById('auth-overlay').style.display = 'none';
             document.getElementById('app-wrapper').classList.remove('hidden');
             
             loadState();
             initDoseTime();
+            initAnalyticsDateInputs();
             renderAll();
+            checkSundayBackupPrompt();
         }
 
         function lockApp() {
@@ -1725,6 +1791,91 @@
 
         function exportPDF() {
             window.print();
+        }
+        function getFormattedFilenameDate() {
+            const today = new Date();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const yyyy = today.getFullYear();
+            return `${mm}${dd}${yyyy}`;
+        }
+
+        function exportJSON() {
+            const backupData = {};
+            const keysToBackup = [
+                'asthma_logs', 'asthma_meds_v4', 'asthma_doctors', 
+                'asthma_activities_v4', 'asthma_triggers_v4', 'asthma_symptoms_v4', 
+                'asthma_protocols', 'asthma_action_plan_img', 
+                'airling_pin_hash', 'airling_recovery_hash', 'airling_last_json_export'
+            ];
+
+            keysToBackup.forEach(key => {
+                const item = localStorage.getItem(key);
+                if (item !== null) backupData[key] = item;
+            });
+
+            const fileName = `airlingdata${getFormattedFilenameDate()}.json`;
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+            
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", fileName);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            localStorage.setItem('airling_last_json_export', new Date().toISOString());
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const restoredData = JSON.parse(e.target.result);
+                    if (typeof restoredData !== 'object' || restoredData === null) {
+                        throw new Error("Invalid file structure");
+                    }
+
+                    Object.entries(restoredData).forEach(([key, val]) => {
+                        localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+                    });
+
+                    alert('Data restored successfully!');
+                    loadState();
+                    renderAll();
+                } catch (err) {
+                    alert('Failed to restore data. Please ensure you uploaded a valid Airling JSON backup file.');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function checkSundayBackupPrompt() {
+            const now = new Date();
+            const isSunday = now.getDay() === 0;
+            const lastExportStr = localStorage.getItem('airling_last_json_export');
+
+            let promptNeeded = false;
+
+            if (!lastExportStr) {
+                if (isSunday) promptNeeded = true;
+            } else {
+                const lastExport = new Date(lastExportStr);
+                const diffDays = (now - lastExport) / (1000 * 60 * 60 * 24);
+
+                if (isSunday && diffDays >= 6) {
+                    promptNeeded = true;
+                } else if (diffDays >= 7) {
+                    promptNeeded = true;
+                }
+            }
+
+            if (promptNeeded) {
+                setTimeout(() => toggleModal('sundayBackupModal', true), 1000);
+            }
         }
     </script>
 </body>
