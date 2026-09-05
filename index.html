@@ -1799,32 +1799,39 @@
             return `${mm}${dd}${yyyy}`;
         }
 
-        function exportJSON() {
-            const backupData = {};
-            const keysToBackup = [
-                'asthma_logs', 'asthma_meds_v4', 'asthma_doctors', 
-                'asthma_activities_v4', 'asthma_triggers_v4', 'asthma_symptoms_v4', 
-                'asthma_protocols', 'asthma_action_plan_img', 
-                'airling_pin_hash', 'airling_recovery_hash', 'airling_last_json_export'
-            ];
+function exportJSON() {
+    const backupData = {};
+    const keysToBackup = [
+        'asthma_logs', 'asthma_meds_v4', 'asthma_doctors', 
+        'asthma_activities_v4', 'asthma_triggers_v4', 'asthma_symptoms_v4', 
+        'asthma_protocols', 'asthma_action_plan_img', 
+        'airling_pin_hash', 'airling_recovery_hash', 'airling_last_json_export'
+    ];
 
-            keysToBackup.forEach(key => {
-                const item = localStorage.getItem(key);
-                if (item !== null) backupData[key] = item;
-            });
+    keysToBackup.forEach(key => {
+        const item = localStorage.getItem(key);
+        if (item !== null) backupData[key] = item;
+    });
 
-            const fileName = `airlingdata${getFormattedFilenameDate()}.json`;
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
-            
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", fileName);
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
+    const fileName = `airlingdata${getFormattedFilenameDate()}.json`;
+    const jsonString = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
-            localStorage.setItem('airling_last_json_export', new Date().toISOString());
-        }
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.href = url;
+    downloadAnchor.download = fileName;
+    downloadAnchor.target = '_blank';
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+
+    setTimeout(() => {
+        downloadAnchor.remove();
+        URL.revokeObjectURL(url);
+    }, 500);
+
+    localStorage.setItem('airling_last_json_export', new Date().toISOString());
+}
 
         function importJSON(event) {
             const file = event.target.files[0];
