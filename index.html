@@ -41,17 +41,29 @@
         .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease; }
         .btn-3d:active { transform: translateY(2px) scale(0.98); }
 
-        /* Zone Glows & 3D Selection */
-        .zone-bg-Green { background-color: #dcfce7; color: #14532d; border: 2px solid #86efac; }
-        .zone-bg-Yellow { background-color: #fef9c3; color: #713f12; border: 2px solid #fde047; }
-        .zone-bg-Low-Yellow { background-color: #ffedd5; color: #7c2d12; border: 2px solid #fdba74; }
-        .zone-bg-Red { background-color: #fee2e2; color: #7f1d1d; border: 2px solid #fca5a5; }
-        .zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
+/* Zone Glows & Base Colors */
+.zone-bg-Green { background-color: #c3eabd; color: #1c4518; border: 2px solid #a6d89e; }
+.zone-bg-Yellow { background-color: #fee597; color: #574000; border: 2px solid #fcd25e; }
+.zone-bg-Low-Yellow { background-color: #fcab76; color: #521c00; border: 2px solid #f78d4b; }
+.zone-bg-Red { background-color: #fb6e75; color: #590308; border: 2px solid #f74851; }
+.zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
 
-        .zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #22c55e; border-color: #16a34a; transform: translateY(-2px); font-weight: 800; }
-        .zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #eab308; border-color: #ca8a04; transform: translateY(-2px); font-weight: 800; }
-        .zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f97316; border-color: #ea580c; transform: translateY(-2px); font-weight: 800; }
-        .zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #ef4444; border-color: #dc2626; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #a6d89e; border-color: #72b367; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #fcd25e; border-color: #e0af2b; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f78d4b; border-color: #d96923; transform: translateY(-2px); font-weight: 800; }
+.zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #f74851; border-color: #d1212a; transform: translateY(-2px); font-weight: 800; }
+
+/* Active Bottom Navigation Button */
+.nav-btn-active {
+    color: #4f46e5 !important;
+    font-weight: 800 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 0 12px #e8dbf3;
+    background-color: #ffffff;
+}
+.nav-btn-active span:first-child {
+    transform: scale(1.15);
+}
 
         .chip-active { background-color: #e0e7ff !important; border: 2px solid #6366f1 !important; color: #3730a3 !important; font-weight: 700 !important; }
         
@@ -162,10 +174,12 @@
     </div>
 
     <div id="app-wrapper" class="hidden">
-        <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3.5 flex justify-between items-center shadow-xs">
-            <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">🫁 Asthma Log</h1>
-            <button onclick="lockApp()" class="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl btn-3d flex items-center gap-1">🔒 Lock</button>
-        </header>
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3 flex justify-between items-center shadow-xs">
+    <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2 leading-none">
+        <img src="images/airling-cloud.png" alt="Airling Cloud" class="w-8 h-auto">
+        <span class="login-title pt-1">Airling Asthma Tracker</span>
+    </h1>
+</header>
 
         <div onclick="toggleModal('envModal', true)" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white px-4 py-3 shadow-md flex justify-between items-center cursor-pointer rounded-b-2xl mx-2 mt-1 active:opacity-95 transition">
             <div class="flex items-center gap-2.5 text-xs">
@@ -203,9 +217,8 @@
             <div id="journalTab" class="tab-content space-y-5">
                 
                 <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-5">
-                    <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                        <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
-                        <span id="todayDateStr" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full"></span>
+                    <div class="border-b border-slate-100 pb-2.5">
+    <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
                     </div>
 
                     <div>
@@ -416,6 +429,11 @@
                         <button type="button" onclick="addActFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
                     </div>
                 </div>
+              <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
+                    <button type="button" onclick="lockApp()" class="w-full bg-slate-100 border border-slate-200 text-slate-700 font-bold py-3 rounded-2xl text-xs btn-3d flex items-center justify-center gap-1.5">
+                        🔒 Lock App
+                    </button>
+                </div>
             </div>
 
         </main>
@@ -603,24 +621,24 @@
         </div>
 
         <div class="fixed bottom-4 left-0 right-0 z-20 px-4">
-            <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
-                <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d">
-                    <span class="text-2xl leading-none">📖</span>
-                    <span>Journal</span>
-                </button>
-                <button type="button" onclick="switchTab('planTab')" id="nav-planTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-                    <span class="text-2xl leading-none">📋</span>
-                    <span>Plan</span>
-                </button>
-                <button type="button" onclick="switchTab('analyticsTab')" id="nav-analyticsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-                    <span class="text-2xl leading-none">📊</span>
-                    <span>Analytics</span>
-                </button>
-                <button type="button" onclick="switchTab('settingsTab')" id="nav-settingsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
-                    <span class="text-2xl leading-none">⚙️</span>
-                    <span>Settings</span>
-                </button>
-            </nav>
+         <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
+    <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d nav-btn-active">
+        <span class="text-2xl leading-none transition-transform">📖</span>
+        <span>Journal</span>
+    </button>
+    <button type="button" onclick="switchTab('analyticsTab')" id="nav-analyticsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+        <span class="text-2xl leading-none transition-transform">📊</span>
+        <span>Analytics</span>
+    </button>
+    <button type="button" onclick="switchTab('planTab')" id="nav-planTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+        <span class="text-2xl leading-none transition-transform">📋</span>
+        <span>Plan</span>
+    </button>
+    <button type="button" onclick="switchTab('settingsTab')" id="nav-settingsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+        <span class="text-2xl leading-none transition-transform">⚙️</span>
+        <span>Settings</span>
+    </button>
+</nav>
         </div>
     </div>
 
@@ -848,7 +866,7 @@
             renderSettingsManager();
         }
 
-        function renderWeeklyRibbon() {
+  function renderWeeklyRibbon() {
             const container = document.getElementById('weeklyRibbonDays');
             container.innerHTML = '';
 
@@ -879,7 +897,10 @@
             }
 
             const isToday = (selectedDateStr === today.toLocaleDateString('en-CA'));
-            document.getElementById('todayDateStr').innerText = isToday ? 'Today' : new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' });
+            const todayPill = document.getElementById('todayDateStr');
+            if (todayPill) {
+                todayPill.innerText = isToday ? 'Today' : new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' });
+            }
             document.getElementById('quickLogTitleDate').innerText = isToday ? "Today's Quick Log" : `Log for ${new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' })}`;
         }
 
@@ -1054,13 +1075,13 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-indigo-600', 'font-bold');
+                btn.classList.remove('text-indigo-600', 'font-bold', 'nav-btn-active');
                 btn.classList.add('text-slate-400', 'font-medium');
             });
             const activeNav = document.getElementById(`nav-${tabId}`);
             if (activeNav) {
                 activeNav.classList.remove('text-slate-400', 'font-medium');
-                activeNav.classList.add('text-indigo-600', 'font-bold');
+                activeNav.classList.add('text-indigo-600', 'font-bold', 'nav-btn-active');
             }
 
             if (tabId === 'analyticsTab') renderAnalytics();
@@ -1532,13 +1553,16 @@
             const zCounts = { Green: 0, Yellow: 0, 'Low Yellow': 0, Red: 0 };
             filteredLogs.forEach(l => { if (l.zone && zCounts[l.zone] !== undefined) zCounts[l.zone]++; });
 
-            const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
+       const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
             if (zoneChartInst) zoneChartInst.destroy();
             zoneChartInst = new Chart(ctxZone, {
                 type: 'doughnut',
                 data: {
                     labels: ['Green', 'Yellow', 'Low Yellow', 'Red'],
-                    datasets: [{ data: [zCounts.Green, zCounts.Yellow, zCounts['Low Yellow'], zCounts.Red], backgroundColor: ['#86efac', '#fde047', '#fdba74', '#fca5a5'] }]
+                    datasets: [{ 
+                        data: [zCounts.Green, zCounts.Yellow, zCounts['Low Yellow'], zCounts.Red], 
+                        backgroundColor: ['#c3eabd', '#fee597', '#fcab76', '#fb6e75'] 
+                    }]
                 },
                 options: { plugins: { legend: { position: 'bottom' } } }
             });
