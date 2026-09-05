@@ -1,0 +1,1673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asthma Tracker</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Asthma Log">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫁</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🫁</text></svg>">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'DM Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* Force hide Netlify feedback drawer / banner */
+        #netlify-notification-root,
+        [data-netlify-drawers],
+        iframe[src*="netlify"] {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        /* 3D Tactile Push Animation */
+        .btn-3d { transition: transform 0.1s ease, box-shadow 0.1s ease; }
+        .btn-3d:active { transform: translateY(2px) scale(0.98); }
+
+        /* Zone Glows & 3D Selection */
+        .zone-bg-Green { background-color: #dcfce7; color: #14532d; border: 2px solid #86efac; }
+        .zone-bg-Yellow { background-color: #fef9c3; color: #713f12; border: 2px solid #fde047; }
+        .zone-bg-Low-Yellow { background-color: #ffedd5; color: #7c2d12; border: 2px solid #fdba74; }
+        .zone-bg-Red { background-color: #fee2e2; color: #7f1d1d; border: 2px solid #fca5a5; }
+        .zone-bg-None { background-color: #f1f5f9; color: #64748b; border: 2px solid #e2e8f0; }
+
+        .zone-pill-Green.zone-pill-selected { box-shadow: 0 0 15px #22c55e; border-color: #16a34a; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Yellow.zone-pill-selected { box-shadow: 0 0 15px #eab308; border-color: #ca8a04; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Low-Yellow.zone-pill-selected { box-shadow: 0 0 15px #f97316; border-color: #ea580c; transform: translateY(-2px); font-weight: 800; }
+        .zone-pill-Red.zone-pill-selected { box-shadow: 0 0 15px #ef4444; border-color: #dc2626; transform: translateY(-2px); font-weight: 800; }
+
+        .chip-active { background-color: #e0e7ff !important; border: 2px solid #6366f1 !important; color: #3730a3 !important; font-weight: 700 !important; }
+        
+        .sev-active-None { background-color: #f1f5f9 !important; border: 2px solid #94a3b8 !important; color: #334155 !important; font-weight: 700 !important; }
+        .sev-active-Mild { background-color: #fef3c7 !important; border: 2px solid #f59e0b !important; color: #78350f !important; font-weight: 700 !important; }
+        .sev-active-Moderate { background-color: #ffedd5 !important; border: 2px solid #f97316 !important; color: #7c2d12 !important; font-weight: 700 !important; }
+        .sev-active-Severe { background-color: #fee2e2 !important; border: 2px solid #ef4444 !important; color: #7f1d1d !important; font-weight: 700 !important; }
+
+        /* Contribution Graph Blocks */
+        .contrib-block-0 { background-color: #f1f5f9; border: 1px solid #e2e8f0; }
+        .contrib-block-1 { background-color: #fde047; border: 1px solid #eab308; }
+        .contrib-block-2 { background-color: #fb923c; border: 1px solid #ea580c; }
+        .contrib-block-3 { background-color: #f87171; border: 1px solid #dc2626; }
+
+        /* Swipe to Delete Container */
+        .swipe-item { transition: transform 0.2s ease-out; }
+
+        /* Auth Screen Styling */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f8fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px 24px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .avatar-container {
+            width: 88px;
+            height: 88px;
+            background: #e0e7ff;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 44px;
+            overflow: hidden;
+            border: 2px solid #c7d2fe;
+        }
+
+        .recovery-box {
+            display: none;
+            background: #f8fafc;
+            border: 1px dashed #4f46e5;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 16px 0;
+        }
+
+        .recovery-key {
+            font-family: monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: #4f46e5;
+            letter-spacing: 2px;
+            margin: 8px 0;
+            user-select: all;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased pb-36">
+
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="avatar-container">☁️</div>
+            <h2 class="text-2xl font-bold text-slate-900">Airling</h2>
+            <p id="instruction" class="text-xs font-semibold text-slate-500 mt-1 mb-4">Enter passcode</p>
+
+            <form id="login-form" action="javascript:void(0);" onsubmit="handleFormSubmit(event)" class="space-y-3">
+                <input type="text" name="username" id="username" value="airling-user" autocomplete="username" class="hidden">
+                
+                <input type="password" name="password" id="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="••••" class="w-full p-3 border border-indigo-200 rounded-2xl text-center text-xl font-bold bg-slate-50 text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-2xl text-xs btn-3d">Unlock App</button>
+            </form>
+            
+            <div id="recovery-setup-box" class="recovery-box">
+                <p class="text-xs text-slate-500 font-medium">Save this Master Recovery Key somewhere safe!</p>
+                <div class="recovery-key" id="generated-key"></div>
+                <p class="text-[11px] text-slate-400 mb-3">You will need this key if you ever forget your PIN.</p>
+                <button type="button" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs btn-3d" onclick="confirmRecoverySaved()">I Saved My Recovery Key</button>
+            </div>
+
+            <div id="recovery-entry-box" class="recovery-box">
+                <p class="text-xs text-slate-600 mb-2">Enter your 12-character Master Recovery Key:</p>
+                <input type="text" id="recovery-key-input" class="w-full p-2.5 border border-slate-200 rounded-xl font-mono text-center text-sm uppercase mb-3" placeholder="XXXX-XXXX-XXXX" maxlength="14">
+                <button type="button" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-xl text-xs btn-3d mb-2" onclick="processRecovery()">Reset Passcode</button>
+                <button type="button" class="w-full text-slate-500 text-xs font-bold" onclick="hideRecoveryInput()">Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-wrapper" class="hidden">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-10 px-4 py-3.5 flex justify-between items-center shadow-xs">
+            <h1 class="text-xl font-bold text-slate-900 flex items-center gap-2">🫁 Asthma Log</h1>
+            <button onclick="lockApp()" class="text-xs font-bold text-slate-600 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl btn-3d flex items-center gap-1">🔒 Lock</button>
+        </header>
+
+        <div onclick="toggleModal('envModal', true)" class="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white px-4 py-3 shadow-md flex justify-between items-center cursor-pointer rounded-b-2xl mx-2 mt-1 active:opacity-95 transition">
+            <div class="flex items-center gap-2.5 text-xs">
+                <span class="text-xl">☀️</span>
+                <div>
+                    <div class="font-bold text-sm">78° / 54°F</div>
+                    <div class="text-blue-100 text-[11px]">AQI: Good (42)</div>
+                </div>
+            </div>
+            <span class="text-xs bg-white/20 px-2.5 py-1 rounded-full font-semibold">Details ➔</span>
+        </div>
+
+        <div id="weeklyRibbonContainer" class="bg-white mx-2 mt-2 p-3 rounded-2xl shadow-xs border border-slate-200/80">
+            <div class="flex justify-between items-center mb-2 px-1">
+                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Past 7 Days</span>
+                <div class="flex gap-2">
+                    <button type="button" onclick="toggleFullCalendar()" class="text-[11px] font-bold text-indigo-600 hover:underline">📅 Full Month View</button>
+                    <button type="button" onclick="resetToTodayDate()" class="text-[11px] font-bold text-slate-500 hover:underline">Jump to Today</button>
+                </div>
+            </div>
+            <div id="weeklyRibbonDays" class="grid grid-cols-7 gap-1.5 text-center"></div>
+
+            <div id="fullMonthCalendar" class="hidden pt-3 border-t border-slate-100 mt-2 space-y-2">
+                <div class="flex justify-between items-center px-1">
+                    <button type="button" onclick="changeMonth(-1)" class="text-xs font-bold text-slate-600">&lt; Prev</button>
+                    <span id="monthYearTitle" class="text-xs font-bold text-slate-800"></span>
+                    <button type="button" onclick="changeMonth(1)" class="text-xs font-bold text-slate-600">Next &gt;</button>
+                </div>
+                <div id="fullMonthGrid" class="grid grid-cols-7 gap-1 text-center"></div>
+            </div>
+        </div>
+
+        <main class="max-w-md mx-auto p-4 space-y-6">
+            
+            <div id="journalTab" class="tab-content space-y-5">
+                
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-5">
+                    <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                        <h3 class="font-bold text-slate-900 text-sm">⚡ <span id="quickLogTitleDate">Today's Quick Log</span></h3>
+                        <span id="todayDateStr" class="text-xs font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full"></span>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Current Zone</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" id="zone-Green" onclick="setZone('Green')" class="p-3 text-xs font-bold rounded-2xl zone-bg-Green zone-pill-Green btn-3d text-center transition">Green</button>
+                            <button type="button" id="zone-Yellow" onclick="setZone('Yellow')" class="p-3 text-xs font-bold rounded-2xl zone-bg-Yellow zone-pill-Yellow btn-3d text-center transition">Yellow</button>
+                            <button type="button" id="zone-Low-Yellow" onclick="setZone('Low Yellow')" class="p-3 text-xs font-bold rounded-2xl zone-bg-Low-Yellow zone-pill-Low-Yellow btn-3d text-center transition">Low Yellow</button>
+                            <button type="button" id="zone-Red" onclick="setZone('Red')" class="p-3 text-xs font-bold rounded-2xl zone-bg-Red zone-pill-Red btn-3d text-center transition">Red</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        
+                        <button type="button" onclick="toggleModal('symptomsModal', true)" class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-left hover:bg-slate-100 btn-3d transition space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-900">🩺 Symptoms</span>
+                                <span id="sympBadge" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">0</span>
+                            </div>
+                            <p id="sympSubtext" class="text-[11px] text-slate-500 font-medium truncate">None logged</p>
+                        </button>
+
+                        <button type="button" onclick="toggleModal('medsModal', true)" class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-left hover:bg-slate-100 btn-3d transition space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-900">💊 Medications</span>
+                                <span id="medsBadge" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">0</span>
+                            </div>
+                            <p id="medsSubtext" class="text-[11px] text-slate-500 font-medium truncate">None logged</p>
+                        </button>
+
+                        <button type="button" onclick="toggleModal('trigModal', true)" class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-left hover:bg-slate-100 btn-3d transition space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-900">⚠️ Triggers</span>
+                                <span id="trigBadge" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">0</span>
+                            </div>
+                            <p id="trigSubtext" class="text-[11px] text-slate-500 font-medium truncate">None logged</p>
+                        </button>
+
+                        <button type="button" onclick="toggleModal('actModal', true)" class="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl text-left hover:bg-slate-100 btn-3d transition space-y-1">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-bold text-slate-900">🏃 Activities</span>
+                                <span id="actBadge" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-bold">0</span>
+                            </div>
+                            <p id="actSubtext" class="text-[11px] text-slate-500 font-medium truncate">None logged</p>
+                        </button>
+
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center px-1">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Activity Log History (Recent 10)</h3>
+                    </div>
+                    <div id="logList" class="space-y-3"></div>
+                </div>
+            </div>
+
+            <div id="planTab" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">📞 Doctor Speed-Dial</h3>
+                    <div class="grid grid-cols-3 gap-2.5 text-center" id="doctorSpeedDial"></div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-900 text-sm">Zone Action Protocols</h3>
+                        <span id="protocolSavedToast" class="hidden text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full">✓ Auto-saved</span>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-green-800 uppercase">Green Zone Protocol</label>
+                        <textarea id="noteGreen" oninput="saveProtocolsWithToast()" placeholder="Green Zone instructions..." class="w-full border border-green-200 rounded-2xl p-3 text-xs bg-green-50/40 focus:outline-none focus:bg-white"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-yellow-800 uppercase">Yellow Zone Protocol</label>
+                        <textarea id="noteYellow" oninput="saveProtocolsWithToast()" placeholder="Yellow Zone instructions..." class="w-full border border-yellow-200 rounded-2xl p-3 text-xs bg-yellow-50/40 focus:outline-none focus:bg-white"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-orange-800 uppercase">Low Yellow Zone Protocol</label>
+                        <textarea id="noteLowYellow" oninput="saveProtocolsWithToast()" placeholder="Low Yellow Zone instructions..." class="w-full border border-orange-200 rounded-2xl p-3 text-xs bg-orange-50/40 focus:outline-none focus:bg-white"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-red-800 uppercase">Red Zone Protocol</label>
+                        <textarea id="noteRed" oninput="saveProtocolsWithToast()" placeholder="Red Zone instructions..." class="w-full border border-red-200 rounded-2xl p-3 text-xs bg-red-50/40 focus:outline-none focus:bg-white"></textarea>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">📄 Official Action Plan Document</h3>
+                    <p class="text-xs text-slate-500 font-medium">Upload a photo or PDF of your official doctor action plan to keep on hand.</p>
+                    
+                    <input type="file" id="actionPlanFileInput" accept="image/*,.pdf" onchange="handleActionPlanUpload(event)" class="hidden">
+                    <button type="button" onclick="document.getElementById('actionPlanFileInput').click()" class="w-full bg-indigo-50 border border-indigo-200 text-indigo-700 py-3 rounded-2xl text-xs font-bold btn-3d">📤 Upload Image / PDF Plan</button>
+                    
+                    <div id="actionPlanPreviewContainer" class="hidden pt-2">
+                        <div class="relative border border-slate-200 rounded-2xl overflow-hidden bg-slate-900 cursor-pointer" onclick="openPlanZoomModal()">
+                            <img id="actionPlanImgPreview" src="" alt="Action Plan" class="w-full h-48 object-cover opacity-90">
+                            <div class="absolute inset-0 flex items-center justify-center bg-black/30 text-white text-xs font-bold gap-1.5">
+                                🔍 Tap to Zoom & View Full Plan
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="analyticsTab" class="tab-content hidden space-y-5">
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Time Range</h3>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="exportCSV()" class="text-[11px] font-bold bg-slate-100 border text-slate-700 px-2.5 py-1 rounded-xl btn-3d">📊 Export CSV</button>
+                            <button type="button" onclick="exportPDF()" class="text-[11px] font-bold bg-indigo-50 border border-indigo-200 text-indigo-700 px-2.5 py-1 rounded-xl btn-3d">📄 Export PDF</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">Start Date</label>
+                            <input type="date" id="analyticsStartDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase">End Date</label>
+                            <input type="date" id="analyticsEndDate" onchange="applyCustomAnalyticsDates()" class="w-full border border-slate-200 rounded-xl p-1.5 text-xs bg-slate-50">
+                        </div>
+                    </div>
+
+                    <div class="flex gap-1.5 text-xs pt-1">
+                        <button type="button" onclick="setAnalyticsRange(7)" id="range-7" class="px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d">7D</button>
+                        <button type="button" onclick="setAnalyticsRange(30)" id="range-30" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">30D</button>
+                        <button type="button" onclick="setAnalyticsRange(90)" id="range-90" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">90D</button>
+                        <button type="button" onclick="setAnalyticsRange(0)" id="range-0" class="px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d">All</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Zone Breakdown</h3>
+                    <canvas id="zoneChartCanvas"></canvas>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Symptom Severity Timeline</h3>
+                        <span id="contribGranularityBadge" class="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">Daily View</span>
+                    </div>
+
+                    <div class="flex gap-3 text-[10px] font-semibold text-slate-500 pt-1 border-t border-slate-100">
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-0 inline-block"></span> None</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-1 inline-block"></span> Mild</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-2 inline-block"></span> Mod.</span>
+                        <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-md contrib-block-3 inline-block"></span> Sev.</span>
+                    </div>
+
+                    <div class="overflow-x-auto pb-2 pt-1">
+                        <div id="contribMatrixRows" class="space-y-3 min-w-max"></div>
+                    </div>
+
+                    <div id="contribDrilldownPanel" class="hidden p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2">
+                        <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                            <strong id="drilldownTitle" class="text-slate-900 font-bold">Window Details</strong>
+                            <button type="button" onclick="document.getElementById('contribDrilldownPanel').classList.add('hidden')" class="text-slate-400 font-bold">&times;</button>
+                        </div>
+                        <div id="drilldownBody" class="space-y-1 text-slate-700"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="settingsTab" class="tab-content hidden space-y-5">
+                <p class="text-xs text-slate-400 px-1 font-medium">💡 Swipe left on any item to reveal the delete button.</p>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">📞 Doctor Directory Numbers</h3>
+                    <input type="tel" id="pcpNum" onchange="saveDoctors()" placeholder="PCP Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                    <input type="tel" id="pulmNum" onchange="saveDoctors()" placeholder="Pulmonologist Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                    <input type="tel" id="nurseNum" onchange="saveDoctors()" placeholder="Nurse Line Phone #" class="w-full border border-slate-200 p-2.5 text-xs rounded-2xl">
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">💊 Manage Medications</h3>
+                    <div id="settingsMedList" class="space-y-2 overflow-hidden"></div>
+                    <div class="pt-2 border-t border-slate-100 flex gap-2">
+                        <input type="text" id="settingNewMedInput" placeholder="New medication..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                        <button type="button" onclick="addMedFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">🩺 Manage Symptoms</h3>
+                    <div id="settingsSympList" class="space-y-2 overflow-hidden"></div>
+                    <div class="pt-2 border-t border-slate-100 flex gap-2">
+                        <input type="text" id="settingNewSympInput" placeholder="New symptom..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                        <button type="button" onclick="addSympFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">⚠️ Manage Triggers</h3>
+                    <div id="settingsTrigList" class="space-y-2 overflow-hidden"></div>
+                    <div class="pt-2 border-t border-slate-100 flex gap-2">
+                        <input type="text" id="settingNewTrigInput" placeholder="New trigger..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                        <button type="button" onclick="addTrigFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-3">
+                    <h3 class="font-bold text-slate-900 text-sm">🏃 Manage Activities</h3>
+                    <div id="settingsActList" class="space-y-2 overflow-hidden"></div>
+                    <div class="pt-2 border-t border-slate-100 flex gap-2">
+                        <input type="text" id="settingNewActInput" placeholder="New activity..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                        <button type="button" onclick="addActFromSettings()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <div id="dailyOverviewModal" class="fixed inset-0 bg-black/50 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-5 shadow-xl max-h-[90vh] overflow-y-auto relative">
+                
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <div>
+                        <h3 class="font-black text-slate-900 text-base" id="overviewDateTitle">Daily Overview</h3>
+                        <p class="text-[11px] text-slate-400 font-semibold" id="overviewSubTitle">Full 24-Hour Inspection & Log Edit</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="overviewSavedToast" class="hidden text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">✓ Saved</span>
+                        <button type="button" onclick="toggleModal('dailyOverviewModal', false)" class="text-slate-400 font-bold text-2xl leading-none">&times;</button>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Zone Shifts Today</span>
+                        <button type="button" onclick="openAddZoneShiftUI()" class="text-[11px] font-bold text-indigo-600 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-xl btn-3d">+ Add Shift</button>
+                    </div>
+
+                    <div id="zoneShiftsList" class="space-y-2"></div>
+
+                    <div id="addZoneShiftPicker" class="hidden pt-2 border-t border-slate-200 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <input type="time" id="newShiftTime" class="text-xs border border-slate-200 rounded-xl p-1.5 font-bold bg-white text-slate-800">
+                            <select id="newShiftZone" class="text-xs border border-slate-200 rounded-xl p-1.5 font-bold bg-white text-slate-800">
+                                <option value="Green">Green</option>
+                                <option value="Yellow">Yellow</option>
+                                <option value="Low Yellow">Low Yellow</option>
+                                <option value="Red">Red</option>
+                            </select>
+                            <button type="button" onclick="saveNewZoneShift()" class="bg-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl btn-3d">Save</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">🩺 Symptoms</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('symptomsModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Symptoms ➔</button>
+                        </div>
+                        <div id="overviewSympList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">💊 Medications & Doses</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('medsModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Meds ➔</button>
+                        </div>
+                        <div id="overviewMedsList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">⚠️ Triggers</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('trigModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Triggers ➔</button>
+                        </div>
+                        <div id="overviewTrigList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">🏃 Activities</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('actModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Activities ➔</button>
+                        </div>
+                        <div id="overviewActList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                </div>
+
+                <button type="button" onclick="toggleModal('dailyOverviewModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close Overview</button>
+            </div>
+        </div>
+
+        <div id="planZoomModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden items-center justify-center p-2 z-50 overflow-auto" onclick="toggleModal('planZoomModal', false)">
+            <div class="relative w-full max-w-lg p-2 text-center">
+                <p class="text-xs text-white/80 pb-2">Pinch to zoom in / out</p>
+                <img id="planZoomImg" src="" alt="Action Plan Full" class="w-full h-auto rounded-2xl max-h-[85vh] object-contain mx-auto">
+                <button type="button" onclick="toggleModal('planZoomModal', false)" class="mt-4 bg-white text-slate-900 px-6 py-2 rounded-2xl text-xs font-bold btn-3d">Close Preview</button>
+            </div>
+        </div>
+
+        <div id="symptomsModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm">🩺 Log Symptoms</h3>
+                    <button type="button" onclick="toggleModal('symptomsModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
+                </div>
+                
+                <div id="symptomsModalList" class="space-y-3"></div>
+
+                <div class="pt-2 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="newSymptomInput" placeholder="Add custom symptom..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                    <button type="button" onclick="addCustomSymptom()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                </div>
+
+                <button type="button" onclick="toggleModal('symptomsModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Done</button>
+            </div>
+        </div>
+
+        <div id="medsModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm">💊 Log Medications</h3>
+                    <button type="button" onclick="toggleModal('medsModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
+                </div>
+
+                <label class="flex items-center justify-between p-3 bg-blue-50/70 rounded-2xl border border-blue-100 cursor-pointer">
+                    <span class="text-xs font-bold text-blue-950 flex items-center gap-2">🏫 Inhaler given at school today</span>
+                    <input type="checkbox" id="schoolInhalerToggle" onchange="toggleSchoolInhaler(this.checked)" class="w-4 h-4 rounded text-blue-600">
+                </label>
+
+                <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-2xl border border-slate-200">
+                    <span class="text-xs font-bold text-slate-700">Next Dose Time:</span>
+                    <input type="time" id="medDoseTime" class="text-xs border border-slate-200 rounded-xl px-2 py-1 bg-white text-slate-800 font-bold">
+                </div>
+
+                <div id="medsModalList" class="space-y-3"></div>
+
+                <div class="pt-2 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="newMedInput" placeholder="Add custom medication..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                    <button type="button" onclick="addCustomMed()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                </div>
+
+                <button type="button" onclick="toggleModal('medsModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Done</button>
+            </div>
+        </div>
+
+        <div id="trigModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm">⚠️ Select Triggers</h3>
+                    <button type="button" onclick="toggleModal('trigModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
+                </div>
+
+                <div id="trigModalList" class="flex flex-wrap gap-2"></div>
+
+                <div class="pt-2 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="newTrigInput" placeholder="Add custom trigger..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                    <button type="button" onclick="addCustomTrig()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                </div>
+
+                <button type="button" onclick="toggleModal('trigModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Done</button>
+            </div>
+        </div>
+
+        <div id="actModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl max-h-[85vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm">🏃 Select Activities</h3>
+                    <button type="button" onclick="toggleModal('actModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
+                </div>
+
+                <div id="actModalList" class="flex flex-wrap gap-2"></div>
+
+                <div class="pt-2 border-t border-slate-100 flex gap-2">
+                    <input type="text" id="newActInput" placeholder="Add custom activity..." class="flex-1 border border-slate-200 rounded-2xl px-3 py-2 text-xs bg-slate-50">
+                    <button type="button" onclick="addCustomAct()" class="bg-indigo-600 text-white px-3 py-2 rounded-2xl text-xs font-bold btn-3d">Add</button>
+                </div>
+
+                <button type="button" onclick="toggleModal('actModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Done</button>
+            </div>
+        </div>
+
+        <div id="envModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+                    <h3 class="font-bold text-slate-900 text-sm">🌍 Environmental Details</h3>
+                    <button type="button" onclick="toggleModal('envModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
+                </div>
+                <div class="text-xs space-y-2 text-slate-700">
+                    <div><strong>Air Quality Index:</strong> 42 (Good)</div>
+                    <div><strong>Grass Pollen:</strong> Low</div>
+                    <div><strong>Tree Pollen:</strong> Low</div>
+                    <div><strong>Weed Pollen:</strong> Low</div>
+                </div>
+                <button type="button" onclick="toggleModal('envModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close</button>
+            </div>
+        </div>
+
+        <div class="fixed bottom-4 left-0 right-0 z-20 px-4">
+            <nav class="max-w-md mx-auto bg-white/90 backdrop-blur-md border border-slate-200/80 rounded-3xl p-2 shadow-lg flex justify-around items-center">
+                <button type="button" onclick="switchTab('journalTab')" id="nav-journalTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-indigo-600 font-bold text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none">📖</span>
+                    <span>Journal</span>
+                </button>
+                <button type="button" onclick="switchTab('planTab')" id="nav-planTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none">📋</span>
+                    <span>Plan</span>
+                </button>
+                <button type="button" onclick="switchTab('analyticsTab')" id="nav-analyticsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none">📊</span>
+                    <span>Analytics</span>
+                </button>
+                <button type="button" onclick="switchTab('settingsTab')" id="nav-settingsTab" class="nav-btn flex-1 py-2 px-3 rounded-2xl text-slate-400 font-medium text-xs flex flex-col items-center gap-1 transition btn-3d">
+                    <span class="text-2xl leading-none">⚙️</span>
+                    <span>Settings</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <script>
+        let logs = [], meds = [], doctors = {}, activities = [], triggers = [], symptoms = [], protocols = {};
+        let selectedDateStr = new Date().toLocaleDateString('en-CA');
+        let currentMonthDate = new Date();
+        let zoneChartInst = null;
+        let toastTimeout = null;
+        let actionPlanImgData = null;
+
+/* AUTHENTICATION CODE */
+        const DEFAULT_PIN_HASH = '1693c1';
+        
+        async function hashString(str) {
+            const cleanStr = String(str).trim();
+            let hash = 0;
+            for (let i = 0; i < cleanStr.length; i++) {
+                hash = (hash << 5) - hash + cleanStr.charCodeAt(i);
+                hash |= 0;
+            }
+            return hash.toString(16);
+        }
+
+        async function handleFormSubmit(e) {
+            if (e) e.preventDefault();
+            const pinInput = document.getElementById('password');
+            if (!pinInput) return;
+
+            const pin = pinInput.value.replace(/\D/g, '');
+            if (!pin) return;
+
+            try {
+                const hashedInput = await hashString(pin);
+                const storedCustomHash = localStorage.getItem('airling_pin_hash');
+                
+                if (hashedInput === DEFAULT_PIN_HASH || (storedCustomHash && hashedInput === storedCustomHash)) {
+                    unlockApp();
+                } else {
+                    alert('Incorrect passcode');
+                    pinInput.value = '';
+                    pinInput.focus();
+                }
+            } catch (err) {
+                alert('Incorrect passcode');
+                pinInput.value = '';
+                pinInput.focus();
+            }
+        }
+
+        function confirmRecoverySaved() {
+            document.getElementById('recovery-setup-box').style.display = 'none';
+            unlockApp();
+        }
+
+        function showRecoveryInput() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('recovery-entry-box').style.display = 'block';
+            document.getElementById('instruction').textContent = 'Reset Passcode';
+        }
+
+        function hideRecoveryInput() {
+            document.getElementById('recovery-entry-box').style.display = 'none';
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('instruction').textContent = 'Enter passcode';
+        }
+
+        async function processRecovery() {
+            const rawInput = document.getElementById('recovery-key-input').value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const hashedInput = await hashString(rawInput);
+            const savedRecoveryHash = localStorage.getItem('airling_recovery_hash');
+
+            if (hashedInput === savedRecoveryHash) {
+                localStorage.removeItem('airling_pin_hash');
+                localStorage.removeItem('airling_recovery_hash');
+                alert('Recovery successful! Please create a new passcode.');
+                location.reload();
+            } else {
+                alert('Invalid Recovery Key. Please check and try again.');
+            }
+        }
+
+        function unlockApp() {
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.getElementById('app-wrapper').classList.remove('hidden');
+            
+            loadState();
+            initDoseTime();
+            initAnalyticsDateInputs();
+            renderAll();
+        }
+
+        function lockApp() {
+            document.getElementById('password').value = '';
+            document.getElementById('app-wrapper').classList.add('hidden');
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('recovery-entry-box').style.display = 'none';
+            document.getElementById('recovery-setup-box').style.display = 'none';
+            document.getElementById('instruction').textContent = 'Enter passcode';
+        }
+
+        /* ORIGINAL APP FUNCTIONS */
+        function loadState() {
+            try {
+                logs = JSON.parse(localStorage.getItem('asthma_logs')) || [];
+                logs.forEach(l => {
+                    if (!l.medDoses) l.medDoses = {};
+                    if (!l.symptomMap) l.symptomMap = {};
+                    if (!l.activities) l.activities = [];
+                    if (!l.triggers) l.triggers = [];
+                    if (!l.zoneShifts) l.zoneShifts = [];
+                });
+
+                meds = JSON.parse(localStorage.getItem('asthma_meds_v4')) || [
+                    { id: 1, name: 'Albuterol', active: true },
+                    { id: 2, name: 'Asmanex', active: true }
+                ];
+                doctors = JSON.parse(localStorage.getItem('asthma_doctors')) || { pcp: '', pulm: '', nurse: '' };
+                activities = JSON.parse(localStorage.getItem('asthma_activities_v4')) || [
+                    { name: '🏃 Active Play', active: true },
+                    { name: '⚽ Sports / Running', active: true },
+                    { name: '🏊 Swimming', active: true },
+                    { name: '🛝 School Recess / P.E.', active: true },
+                    { name: '🚴 Bike Riding', active: true },
+                    { name: '⛺ Outdoor Camping / Hiking', active: true }
+                ];
+                triggers = JSON.parse(localStorage.getItem('asthma_triggers_v4')) || [
+                    { name: '🥶 Cold Air Exposure', active: true },
+                    { name: '🤧 Cold / Post-Viral', active: true },
+                    { name: '💨 High Wind', active: true },
+                    { name: '🌸 High Pollen', active: true },
+                    { name: '🐱 Pet Dander', active: true },
+                    { name: '🪵 Campfire Smoke', active: true }
+                ];
+                symptoms = JSON.parse(localStorage.getItem('asthma_symptoms_v4')) || [
+                    { name: '🗣️ Coughing', active: true },
+                    { name: '🌙 Worse Nighttime Coughing', active: true },
+                    { name: '😴 Nighttime Waking', active: true },
+                    { name: '🫁 Wheezing', active: true },
+                    { name: '😮‍💨 Shortness of Breath', active: true },
+                    { name: '💔 Chest Tightness / Pain', active: true },
+                    { name: '📉 Low Peak Flow', active: true }
+                ];
+                protocols = JSON.parse(localStorage.getItem('asthma_protocols')) || { Green: '', Yellow: '', 'Low Yellow': '', Red: '' };
+                actionPlanImgData = localStorage.getItem('asthma_action_plan_img');
+                if (actionPlanImgData) displayActionPlanPreview(actionPlanImgData);
+            } catch(e) {}
+        }
+
+        function saveState() {
+            localStorage.setItem('asthma_logs', JSON.stringify(logs));
+            localStorage.setItem('asthma_meds_v4', JSON.stringify(meds));
+            localStorage.setItem('asthma_doctors', JSON.stringify(doctors));
+            localStorage.setItem('asthma_activities_v4', JSON.stringify(activities));
+            localStorage.setItem('asthma_triggers_v4', JSON.stringify(triggers));
+            localStorage.setItem('asthma_symptoms_v4', JSON.stringify(symptoms));
+            localStorage.setItem('asthma_protocols', JSON.stringify(protocols));
+            
+            showOverviewSaveToast();
+        }
+
+        function showOverviewSaveToast() {
+            const toast = document.getElementById('overviewSavedToast');
+            if (toast) {
+                toast.classList.remove('hidden');
+                setTimeout(() => toast.classList.add('hidden'), 1500);
+            }
+        }
+
+        function initDoseTime() {
+            document.getElementById('medDoseTime').value = new Date().toTimeString().slice(0, 5);
+        }
+
+        function initAnalyticsDateInputs() {
+            const today = new Date();
+            const weekAgo = new Date();
+            weekAgo.setDate(today.getDate() - 7);
+            document.getElementById('analyticsEndDate').value = today.toLocaleDateString('en-CA');
+            document.getElementById('analyticsStartDate').value = weekAgo.toLocaleDateString('en-CA');
+        }
+
+        function getLogForDate(dateStr) {
+            let log = logs.find(l => {
+                if (!l.timestamp) return false;
+                const logLocalDate = new Date(l.timestamp).toLocaleDateString('en-CA');
+                return logLocalDate === dateStr;
+            });
+
+            if (!log) {
+                log = { 
+                    id: Date.now(), 
+                    timestamp: new Date(`${dateStr}T12:00:00`).toISOString(), 
+                    zone: null, 
+                    zoneShifts: [],
+                    symptomMap: {}, 
+                    activities: [], 
+                    triggers: [], 
+                    medDoses: {}, 
+                    schoolInhaler: false 
+                };
+                logs.unshift(log);
+                saveState();
+            }
+            if (!log.symptomMap) log.symptomMap = {};
+            if (!log.activities) log.activities = [];
+            if (!log.triggers) log.triggers = [];
+            if (!log.medDoses) log.medDoses = {};
+            if (!log.zoneShifts) log.zoneShifts = [];
+            return log;
+        }
+
+        function renderAll() {
+            renderWeeklyRibbon();
+            renderFullMonthGrid();
+            renderActiveZone();
+            renderLauncherBadges();
+            renderLogs();
+            renderSymptomsModal();
+            renderMedsModal();
+            renderTrigModal();
+            renderActModal();
+            renderDoctors();
+            loadProtocolsUI();
+            renderSettingsManager();
+        }
+
+        function renderWeeklyRibbon() {
+            const container = document.getElementById('weeklyRibbonDays');
+            container.innerHTML = '';
+
+            const today = new Date();
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(today.getDate() - i);
+                const dStr = d.toLocaleDateString('en-CA');
+                const dayName = d.toLocaleDateString([], { weekday: 'narrow' });
+                const dayNum = d.getDate();
+
+                const log = logs.find(l => l.timestamp && new Date(l.timestamp).toLocaleDateString('en-CA') === dStr);
+                const zone = log ? log.zone : 'None';
+                const isSelected = (dStr === selectedDateStr);
+
+                let bgClass = 'zone-bg-None';
+                if (zone === 'Green') bgClass = 'zone-bg-Green';
+                if (zone === 'Yellow') bgClass = 'zone-bg-Yellow';
+                if (zone === 'Low Yellow') bgClass = 'zone-bg-Low-Yellow';
+                if (zone === 'Red') bgClass = 'zone-bg-Red';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `p-1.5 rounded-2xl flex flex-col items-center justify-center transition border btn-3d ${bgClass} ${isSelected ? 'ring-2 ring-indigo-600 scale-105 font-bold shadow-xs' : 'opacity-85'}`;
+                btn.innerHTML = `<span class="text-[9px] uppercase font-bold">${dayName}</span><span class="text-xs font-black">${dayNum}</span>`;
+                btn.onclick = () => selectRibbonDate(dStr);
+                container.appendChild(btn);
+            }
+
+            const isToday = (selectedDateStr === today.toLocaleDateString('en-CA'));
+            document.getElementById('todayDateStr').innerText = isToday ? 'Today' : new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' });
+            document.getElementById('quickLogTitleDate').innerText = isToday ? "Today's Quick Log" : `Log for ${new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' })}`;
+        }
+
+        function toggleFullCalendar() {
+            const el = document.getElementById('fullMonthCalendar');
+            el.classList.toggle('hidden');
+            if (!el.classList.contains('hidden')) renderFullMonthGrid();
+        }
+
+        function changeMonth(delta) {
+            currentMonthDate.setMonth(currentMonthDate.getMonth() + delta);
+            renderFullMonthGrid();
+        }
+
+        function renderFullMonthGrid() {
+            const container = document.getElementById('fullMonthGrid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const year = currentMonthDate.getFullYear();
+            const month = currentMonthDate.getMonth();
+            document.getElementById('monthYearTitle').innerText = new Date(year, month).toLocaleDateString([], { month: 'long', year: 'numeric' });
+
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                container.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const log = logs.find(l => l.timestamp && new Date(l.timestamp).toLocaleDateString('en-CA') === dStr);
+                const zone = log ? log.zone : 'None';
+
+                let bgClass = 'zone-bg-None';
+                if (zone === 'Green') bgClass = 'zone-bg-Green';
+                if (zone === 'Yellow') bgClass = 'zone-bg-Yellow';
+                if (zone === 'Low Yellow') bgClass = 'zone-bg-Low-Yellow';
+                if (zone === 'Red') bgClass = 'zone-bg-Red';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `p-1 text-[11px] font-bold rounded-xl border transition ${bgClass} ${dStr === selectedDateStr ? 'ring-2 ring-indigo-600 font-black' : ''}`;
+                btn.innerText = day;
+                btn.onclick = () => selectRibbonDate(dStr);
+                container.appendChild(btn);
+            }
+        }
+
+        function selectRibbonDate(dStr) {
+            selectedDateStr = dStr;
+            renderAll();
+            openDailyOverviewModal(dStr);
+        }
+
+        function resetToTodayDate() {
+            selectedDateStr = new Date().toLocaleDateString('en-CA');
+            renderAll();
+            openDailyOverviewModal(selectedDateStr);
+        }
+
+        function openDailyOverviewModal(dStr) {
+            selectedDateStr = dStr;
+            const log = getLogForDate(dStr);
+            const formattedDate = new Date(`${dStr}T12:00:00`).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+            
+            document.getElementById('overviewDateTitle').innerText = formattedDate;
+            
+            renderZoneShiftsList(log);
+
+            const sympEntries = Object.entries(log.symptomMap || {});
+            const sympContainer = document.getElementById('overviewSympList');
+            if (sympEntries.length) {
+                sympContainer.innerHTML = sympEntries.map(([s, sev]) => `<div>• <strong>${s}:</strong> ${sev}</div>`).join('');
+            } else {
+                sympContainer.innerHTML = '<div class="text-slate-400 italic">No symptoms logged for this day</div>';
+            }
+
+            const medEntries = [];
+            Object.entries(log.medDoses || {}).forEach(([mId, times]) => {
+                const med = meds.find(m => m.id == mId);
+                if (med && times && times.length) medEntries.push(`• <strong>${med.name}:</strong> Doses at ${times.join(', ')}`);
+            });
+            if (log.schoolInhaler) medEntries.push('• 🏫 <strong>School Inhaler:</strong> Administered');
+
+            const medsContainer = document.getElementById('overviewMedsList');
+            if (medEntries.length) {
+                medsContainer.innerHTML = medEntries.join('');
+            } else {
+                medsContainer.innerHTML = '<div class="text-slate-400 italic">No medication doses logged for this day</div>';
+            }
+
+            const trigContainer = document.getElementById('overviewTrigList');
+            if (log.triggers && log.triggers.length) {
+                trigContainer.innerHTML = `<div class="flex flex-wrap gap-1.5">${log.triggers.map(t => `<span class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-lg font-semibold text-[11px]">${t}</span>`).join('')}</div>`;
+            } else {
+                trigContainer.innerHTML = '<div class="text-slate-400 italic">No triggers logged for this day</div>';
+            }
+
+            const actContainer = document.getElementById('overviewActList');
+            if (log.activities && log.activities.length) {
+                actContainer.innerHTML = `<div class="flex flex-wrap gap-1.5">${log.activities.map(a => `<span class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-lg font-semibold text-[11px]">${a}</span>`).join('')}</div>`;
+            } else {
+                actContainer.innerHTML = '<div class="text-slate-400 italic">No activities logged for this day</div>';
+            }
+
+            toggleModal('dailyOverviewModal', true);
+        }
+
+        function renderZoneShiftsList(log) {
+            const container = document.getElementById('zoneShiftsList');
+            const shifts = log.zoneShifts || [];
+
+            if (!shifts.length && log.zone) {
+                container.innerHTML = `
+                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-600">Active Zone:</span>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${getZoneClass(log.zone)}">${log.zone} Zone</span>
+                    </div>
+                `;
+            } else if (shifts.length) {
+                container.innerHTML = shifts.map((s, idx) => `
+                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
+                        <span class="text-xs font-bold text-slate-500">${s.time}</span>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${getZoneClass(s.zone)}">${s.zone} Zone</span>
+                            <button type="button" onclick="removeZoneShift(${idx})" class="text-red-500 font-bold px-1 text-sm">&times;</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                container.innerHTML = '<div class="text-xs text-slate-400 italic">No zone recorded yet for this day</div>';
+            }
+        }
+
+        function openAddZoneShiftUI() {
+            const el = document.getElementById('addZoneShiftPicker');
+            el.classList.toggle('hidden');
+            document.getElementById('newShiftTime').value = new Date().toTimeString().slice(0, 5);
+        }
+
+        function saveNewZoneShift() {
+            const log = getLogForDate(selectedDateStr);
+            const time = document.getElementById('newShiftTime').value || '12:00';
+            const zone = document.getElementById('newShiftZone').value;
+
+            if (!log.zoneShifts) log.zoneShifts = [];
+            log.zoneShifts.push({ time, zone });
+            log.zone = zone;
+
+            saveState();
+            renderAll();
+            openDailyOverviewModal(selectedDateStr);
+            document.getElementById('addZoneShiftPicker').classList.add('hidden');
+        }
+
+        function removeZoneShift(idx) {
+            const log = getLogForDate(selectedDateStr);
+            if (log.zoneShifts) {
+                log.zoneShifts.splice(idx, 1);
+                if (log.zoneShifts.length) log.zone = log.zoneShifts[log.zoneShifts.length - 1].zone;
+                else log.zone = null;
+                saveState();
+                renderAll();
+                openDailyOverviewModal(selectedDateStr);
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-600', 'font-bold');
+                btn.classList.add('text-slate-400', 'font-medium');
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-400', 'font-medium');
+                activeNav.classList.add('text-indigo-600', 'font-bold');
+            }
+
+            if (tabId === 'analyticsTab') renderAnalytics();
+        }
+
+        function toggleModal(id, show) {
+            const el = document.getElementById(id);
+            if (show) el.classList.remove('hidden'), el.classList.add('flex');
+            else el.classList.add('hidden'), el.classList.remove('flex');
+        }
+
+        function setZone(z) {
+            const log = getLogForDate(selectedDateStr);
+            log.zone = z;
+            const nowTime = new Date().toTimeString().slice(0, 5);
+            if (!log.zoneShifts) log.zoneShifts = [];
+            log.zoneShifts.push({ time: nowTime, zone: z });
+
+            saveState();
+            renderWeeklyRibbon();
+            renderActiveZone();
+            renderLogs();
+        }
+
+        function renderActiveZone() {
+            const log = getLogForDate(selectedDateStr);
+            ['Green', 'Yellow', 'Low-Yellow', 'Red'].forEach(z => {
+                const btn = document.getElementById(`zone-${z}`);
+                if (btn) btn.classList.remove('zone-pill-selected');
+            });
+            if (log.zone) {
+                const activeZone = document.getElementById(`zone-${log.zone.replace(' ', '-')}`);
+                if (activeZone) activeZone.classList.add('zone-pill-selected');
+            }
+        }
+
+        function renderLauncherBadges() {
+            const log = getLogForDate(selectedDateStr);
+
+            const sympKeys = Object.keys(log.symptomMap || {});
+            document.getElementById('sympBadge').innerText = sympKeys.length;
+            document.getElementById('sympSubtext').innerText = sympKeys.length ? sympKeys.slice(0, 2).join(', ') : 'None logged';
+
+            const medDoses = log.medDoses || {};
+            let totalDoses = Object.values(medDoses).reduce((acc, doseList) => acc + (doseList ? doseList.length : 0), 0);
+            if (log.schoolInhaler) totalDoses += 1;
+            document.getElementById('medsBadge').innerText = totalDoses;
+            document.getElementById('medsSubtext').innerText = totalDoses ? (log.schoolInhaler ? 'School inhaler given' : `${totalDoses} doses given`) : 'None logged';
+
+            document.getElementById('trigBadge').innerText = log.triggers.length;
+            document.getElementById('trigSubtext').innerText = log.triggers.length ? log.triggers.slice(0, 2).join(', ') : 'None logged';
+
+            document.getElementById('actBadge').innerText = log.activities.length;
+            document.getElementById('actSubtext').innerText = log.activities.length ? log.activities.slice(0, 2).join(', ') : 'None logged';
+        }
+
+        function renderSymptomsModal() {
+            const log = getLogForDate(selectedDateStr);
+            const container = document.getElementById('symptomsModalList');
+            const activeSymps = symptoms.filter(s => s.active);
+
+            container.innerHTML = activeSymps.map(s => {
+                const currentSev = log.symptomMap[s.name] || '';
+                return `
+                    <div class="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
+                        <div class="text-xs font-bold text-slate-800">${s.name}</div>
+                        <div class="grid grid-cols-4 gap-1">
+                            <button type="button" onclick="setSymptomSev('${s.name}', '')" class="py-1 text-[11px] font-bold rounded-xl border btn-3d ${currentSev === '' ? 'sev-active-None' : 'bg-white text-slate-600 border-slate-200'}">None</button>
+                            <button type="button" onclick="setSymptomSev('${s.name}', 'Mild')" class="py-1 text-[11px] font-bold rounded-xl border btn-3d ${currentSev === 'Mild' ? 'sev-active-Mild' : 'bg-amber-50 text-amber-800 border-amber-200'}">Mild</button>
+                            <button type="button" onclick="setSymptomSev('${s.name}', 'Moderate')" class="py-1 text-[11px] font-bold rounded-xl border btn-3d ${currentSev === 'Moderate' ? 'sev-active-Moderate' : 'bg-orange-50 text-orange-800 border-orange-200'}">Mod.</button>
+                            <button type="button" onclick="setSymptomSev('${s.name}', 'Severe')" class="py-1 text-[11px] font-bold rounded-xl border btn-3d ${currentSev === 'Severe' ? 'sev-active-Severe' : 'bg-red-50 text-red-800 border-red-200'}">Sev.</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setSymptomSev(symptomName, sev) {
+            const log = getLogForDate(selectedDateStr);
+            if (!sev) delete log.symptomMap[symptomName];
+            else log.symptomMap[symptomName] = sev;
+            saveState();
+            renderSymptomsModal();
+            renderLauncherBadges();
+            renderLogs();
+        }
+
+        function addCustomSymptom() {
+            const val = document.getElementById('newSymptomInput').value.trim();
+            if (val && !symptoms.some(s => s.name === val)) {
+                symptoms.push({ name: val, active: true });
+                document.getElementById('newSymptomInput').value = '';
+                saveState();
+                renderSymptomsModal();
+                renderSettingsManager();
+            }
+        }
+
+        function renderMedsModal() {
+            const log = getLogForDate(selectedDateStr);
+            document.getElementById('schoolInhalerToggle').checked = !!log.schoolInhaler;
+
+            const container = document.getElementById('medsModalList');
+            const activeMeds = meds.filter(m => m.active);
+
+            container.innerHTML = activeMeds.map(m => {
+                const doseTimes = log.medDoses[m.id] || [];
+                return `
+                    <div class="bg-blue-50/80 border border-blue-200 p-3 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-blue-950">${m.name}</span>
+                            <button type="button" onclick="addMedDose(${m.id})" class="bg-indigo-600 text-white px-3 py-1 rounded-xl text-xs font-bold btn-3d">+ Add Dose</button>
+                        </div>
+                        ${doseTimes.length ? `
+                            <div class="space-y-1.5 pt-1">
+                                ${doseTimes.map((time, doseIdx) => `
+                                    <div class="flex items-center justify-between bg-white px-2.5 py-1 rounded-xl border border-blue-100 text-xs">
+                                        <span class="text-[11px] font-semibold text-slate-500">Dose ${doseIdx + 1}:</span>
+                                        <div class="flex items-center gap-1.5">
+                                            <input type="time" value="${time}" onchange="updateMedDoseTime(${m.id}, ${doseIdx}, this.value)" class="text-xs font-bold text-slate-800 bg-slate-50 px-1.5 py-0.5 rounded-lg border border-slate-200">
+                                            <button type="button" onclick="removeMedDose(${m.id}, ${doseIdx})" class="text-red-500 font-bold px-1 text-base leading-none">&times;</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '<div class="text-[11px] text-slate-400 italic">No doses recorded today</div>'}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addMedDose(medId) {
+            const log = getLogForDate(selectedDateStr);
+            if (!log.medDoses[medId]) log.medDoses[medId] = [];
+            const timeInput = document.getElementById('medDoseTime').value || new Date().toTimeString().slice(0, 5);
+            log.medDoses[medId].push(timeInput);
+            saveState();
+            renderMedsModal();
+            renderLauncherBadges();
+            renderLogs();
+        }
+
+        function updateMedDoseTime(medId, doseIdx, newTime) {
+            const log = getLogForDate(selectedDateStr);
+            if (log.medDoses[medId] && log.medDoses[medId][doseIdx] !== undefined) {
+                log.medDoses[medId][doseIdx] = newTime;
+                saveState();
+                renderLauncherBadges();
+                renderLogs();
+            }
+        }
+
+        function removeMedDose(medId, doseIdx) {
+            const log = getLogForDate(selectedDateStr);
+            if (log.medDoses[medId]) {
+                log.medDoses[medId].splice(doseIdx, 1);
+                if (!log.medDoses[medId].length) delete log.medDoses[medId];
+                saveState();
+                renderMedsModal();
+                renderLauncherBadges();
+                renderLogs();
+            }
+        }
+
+        function toggleSchoolInhaler(checked) {
+            const log = getLogForDate(selectedDateStr);
+            log.schoolInhaler = checked;
+            saveState();
+            renderLauncherBadges();
+            renderLogs();
+        }
+
+        function addCustomMed() {
+            const val = document.getElementById('newMedInput').value.trim();
+            if (val) {
+                meds.push({ id: Date.now(), name: val, active: true });
+                document.getElementById('newMedInput').value = '';
+                saveState();
+                renderMedsModal();
+                renderSettingsManager();
+            }
+        }
+
+        function renderTrigModal() {
+            const log = getLogForDate(selectedDateStr);
+            const container = document.getElementById('trigModalList');
+            const activeTrigs = triggers.filter(t => t.active);
+
+            container.innerHTML = activeTrigs.map(t => {
+                const sel = log.triggers.includes(t.name);
+                return `<button type="button" onclick="toggleTrig('${t.name}')" class="px-3 py-2 text-xs rounded-2xl border border-slate-200/80 transition btn-3d ${sel ? 'chip-active' : 'bg-slate-50 text-slate-700'}">${t.name}</button>`;
+            }).join('');
+        }
+
+        function toggleTrig(tName) {
+            const log = getLogForDate(selectedDateStr);
+            const idx = log.triggers.indexOf(tName);
+            if (idx > -1) log.triggers.splice(idx, 1);
+            else log.triggers.push(tName);
+            saveState();
+            renderTrigModal();
+            renderLauncherBadges();
+            renderLogs();
+        }
+
+        function addCustomTrig() {
+            const val = document.getElementById('newTrigInput').value.trim();
+            if (val && !triggers.some(t => t.name === val)) {
+                triggers.push({ name: val, active: true });
+                document.getElementById('newTrigInput').value = '';
+                saveState();
+                renderTrigModal();
+                renderSettingsManager();
+            }
+        }
+
+        function renderActModal() {
+            const log = getLogForDate(selectedDateStr);
+            const container = document.getElementById('actModalList');
+            const activeActs = activities.filter(a => a.active);
+
+            container.innerHTML = activeActs.map(a => {
+                const sel = log.activities.includes(a.name);
+                return `<button type="button" onclick="toggleAct('${a.name}')" class="px-3 py-2 text-xs rounded-2xl border border-slate-200/80 transition btn-3d ${sel ? 'chip-active' : 'bg-slate-50 text-slate-700'}">${a.name}</button>`;
+            }).join('');
+        }
+
+        function toggleAct(aName) {
+            const log = getLogForDate(selectedDateStr);
+            const idx = log.activities.indexOf(aName);
+            if (idx > -1) log.activities.splice(idx, 1);
+            else log.activities.push(aName);
+            saveState();
+            renderActModal();
+            renderLauncherBadges();
+            renderLogs();
+        }
+
+        function addCustomAct() {
+            const val = document.getElementById('newActInput').value.trim();
+            if (val && !activities.some(a => a.name === val)) {
+                activities.push({ name: val, active: true });
+                document.getElementById('newActInput').value = '';
+                saveState();
+                renderActModal();
+                renderSettingsManager();
+            }
+        }
+
+        function renderLogs() {
+            const container = document.getElementById('logList');
+            const sortedLogs = [...logs].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 10);
+
+            container.innerHTML = sortedLogs.map(l => {
+                const dStr = new Date(l.timestamp).toLocaleDateString('en-CA');
+                const sympList = Object.entries(l.symptomMap || {}).map(([s, sev]) => `${s} (${sev})`).join(', ');
+                const actList = (l.activities || []).join(', ');
+                const trigList = (l.triggers || []).join(', ');
+
+                const medEntries = [];
+                Object.entries(l.medDoses || {}).forEach(([medId, times]) => {
+                    const med = meds.find(m => m.id == medId);
+                    if (med && times && times.length) {
+                        medEntries.push(`${med.name}: ${times.join(', ')}`);
+                    }
+                });
+                const medSummary = medEntries.join(' | ');
+                const dateFormatted = new Date(`${dStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
+
+                return `
+                    <div onclick="openDailyOverviewModal('${dStr}')" class="bg-white p-4 rounded-3xl border border-slate-200/80 text-xs space-y-2 shadow-xs hover:border-indigo-300 cursor-pointer transition active:scale-[0.99]">
+                        <div class="flex justify-between items-center font-bold border-b border-slate-100 pb-2">
+                            <span class="text-slate-800 flex items-center gap-1.5">${dateFormatted} <span class="text-[10px] text-indigo-600 font-normal">🔍 Open Overview</span></span>
+                            <span class="px-2.5 py-0.5 rounded-full ${l.zone ? getZoneClass(l.zone) : 'zone-bg-None'}">${l.zone ? l.zone + ' Zone' : 'No Zone Set'}</span>
+                        </div>
+                        ${sympList ? `<div><strong>Symptoms:</strong> ${sympList}</div>` : '<div class="text-slate-400 italic">No symptoms logged</div>'}
+                        ${medSummary ? `<div><strong>Medication Doses:</strong> ${medSummary}</div>` : ''}
+                        ${l.schoolInhaler ? `<div><strong>School:</strong> 🏫 Inhaler given at school</div>` : ''}
+                        ${actList ? `<div><strong>Activities:</strong> ${actList}</div>` : ''}
+                        ${trigList ? `<div><strong>Triggers:</strong> ${trigList}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function getZoneClass(z) {
+            if (z === 'Green') return 'zone-bg-Green';
+            if (z === 'Yellow') return 'zone-bg-Yellow';
+            if (z === 'Low Yellow') return 'zone-bg-Low-Yellow';
+            return 'zone-bg-Red';
+        }
+
+        function handleActionPlanUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                actionPlanImgData = event.target.result;
+                localStorage.setItem('asthma_action_plan_img', actionPlanImgData);
+                displayActionPlanPreview(actionPlanImgData);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function displayActionPlanPreview(dataUrl) {
+            document.getElementById('actionPlanImgPreview').src = dataUrl;
+            document.getElementById('planZoomImg').src = dataUrl;
+            document.getElementById('actionPlanPreviewContainer').classList.remove('hidden');
+        }
+
+        function openPlanZoomModal() {
+            if (actionPlanImgData) toggleModal('planZoomModal', true);
+        }
+
+        function loadProtocolsUI() {
+            document.getElementById('noteGreen').value = protocols.Green || '';
+            document.getElementById('noteYellow').value = protocols.Yellow || '';
+            document.getElementById('noteLowYellow').value = protocols['Low Yellow'] || '';
+            document.getElementById('noteRed').value = protocols.Red || '';
+        }
+
+        function saveProtocolsWithToast() {
+            protocols.Green = document.getElementById('noteGreen').value;
+            protocols.Yellow = document.getElementById('noteYellow').value;
+            protocols['Low Yellow'] = document.getElementById('noteLowYellow').value;
+            protocols.Red = document.getElementById('noteRed').value;
+            saveState();
+
+            const toast = document.getElementById('protocolSavedToast');
+            toast.classList.remove('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => toast.classList.add('hidden'), 2000);
+        }
+
+        function renderDoctors() {
+            document.getElementById('pcpNum').value = doctors.pcp || '';
+            document.getElementById('pulmNum').value = doctors.pulm || '';
+            document.getElementById('nurseNum').value = doctors.nurse || '';
+            document.getElementById('doctorSpeedDial').innerHTML = `
+                <a href="tel:${doctors.pcp}" class="p-3 bg-blue-50 border border-blue-200 rounded-2xl text-xs font-bold text-blue-900 block btn-3d">🩺 PCP</a>
+                <a href="tel:${doctors.pulm}" class="p-3 bg-purple-50 border border-purple-200 rounded-2xl text-xs font-bold text-purple-900 block btn-3d">🫁 Pulm</a>
+                <a href="tel:${doctors.nurse}" class="p-3 bg-green-50 border border-green-200 rounded-2xl text-xs font-bold text-green-900 block btn-3d">👩‍⚕️ Nurse</a>
+            `;
+        }
+
+        function saveDoctors() {
+            doctors.pcp = document.getElementById('pcpNum').value;
+            doctors.pulm = document.getElementById('pulmNum').value;
+            doctors.nurse = document.getElementById('nurseNum').value;
+            saveState();
+            renderDoctors();
+        }
+
+        function renderSettingsManager() {
+            const createSwipeItem = (title, isActive, onToggle, onDelete, onRename) => `
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                    <div class="absolute inset-y-0 right-0 bg-red-500 text-white flex items-center justify-end px-4 font-bold text-xs" onclick="${onDelete}">
+                        Delete
+                    </div>
+                    <div class="swipe-item relative bg-slate-50 p-2.5 flex justify-between items-center text-xs gap-2"
+                         ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event, this)">
+                        <input type="text" value="${title}" onchange="${onRename}(this.value)" class="flex-1 min-w-0 font-bold text-slate-800 bg-transparent focus:bg-white px-1.5 py-0.5 rounded-lg border border-transparent focus:border-slate-300 truncate">
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button type="button" onclick="${onToggle}" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ${isActive ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}">${isActive ? 'Active' : 'Hidden'}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('settingsMedList').innerHTML = meds.map((m, idx) => 
+                createSwipeItem(m.name, m.active, `toggleMedActive(${idx})`, `deleteMedItem(${idx})`, `renameMed.bind(null, ${idx})`)
+            ).join('');
+
+            document.getElementById('settingsSympList').innerHTML = symptoms.map((s, idx) => 
+                createSwipeItem(s.name, s.active, `toggleSympActive(${idx})`, `deleteSympItem(${idx})`, `renameSymp.bind(null, ${idx})`)
+            ).join('');
+
+            document.getElementById('settingsTrigList').innerHTML = triggers.map((t, idx) => 
+                createSwipeItem(t.name, t.active, `toggleTrigActive(${idx})`, `deleteTrigItem(${idx})`, `renameTrig.bind(null, ${idx})`)
+            ).join('');
+
+            document.getElementById('settingsActList').innerHTML = activities.map((a, idx) => 
+                createSwipeItem(a.name, a.active, `toggleActActive(${idx})`, `deleteActItem(${idx})`, `renameAct.bind(null, ${idx})`)
+            ).join('');
+        }
+
+        let touchStartX = 0;
+        function handleTouchStart(e) { touchStartX = e.touches[0].clientX; }
+        function handleTouchMove(e, el) {
+            const touchX = e.touches[0].clientX;
+            const diff = touchStartX - touchX;
+            if (diff > 30) el.style.transform = 'translateX(-65px)';
+            else if (diff < -30) el.style.transform = 'translateX(0px)';
+        }
+
+        function toggleMedActive(i) { meds[i].active = !meds[i].active; saveState(); renderAll(); }
+        function toggleSympActive(i) { symptoms[i].active = !symptoms[i].active; saveState(); renderAll(); }
+        function toggleTrigActive(i) { triggers[i].active = !triggers[i].active; saveState(); renderAll(); }
+        function toggleActActive(i) { activities[i].active = !activities[i].active; saveState(); renderAll(); }
+
+        function renameMed(i, val) { if (val.trim()) meds[i].name = val.trim(); saveState(); renderAll(); }
+        function renameSymp(i, val) { if (val.trim()) symptoms[i].name = val.trim(); saveState(); renderAll(); }
+        function renameTrig(i, val) { if (val.trim()) triggers[i].name = val.trim(); saveState(); renderAll(); }
+        function renameAct(i, val) { if (val.trim()) activities[i].name = val.trim(); saveState(); renderAll(); }
+
+        function deleteMedItem(idx) { meds.splice(idx, 1); saveState(); renderAll(); }
+        function deleteSympItem(idx) { symptoms.splice(idx, 1); saveState(); renderAll(); }
+        function deleteTrigItem(idx) { triggers.splice(idx, 1); saveState(); renderAll(); }
+        function deleteActItem(idx) { activities.splice(idx, 1); saveState(); renderAll(); }
+
+        function addMedFromSettings() { const val = document.getElementById('settingNewMedInput').value.trim(); if(val){ meds.push({id:Date.now(), name:val, active:true}); document.getElementById('settingNewMedInput').value=''; saveState(); renderAll(); }}
+        function addSympFromSettings() { const val = document.getElementById('settingNewSympInput').value.trim(); if(val){ symptoms.push({name:val, active:true}); document.getElementById('settingNewSympInput').value=''; saveState(); renderAll(); }}
+        function addTrigFromSettings() { const val = document.getElementById('settingNewTrigInput').value.trim(); if(val){ triggers.push({name:val, active:true}); document.getElementById('settingNewTrigInput').value=''; saveState(); renderAll(); }}
+        function addActFromSettings() { const val = document.getElementById('settingNewActInput').value.trim(); if(val){ activities.push({name:val, active:true}); document.getElementById('settingNewActInput').value=''; saveState(); renderAll(); }}
+
+        let currentAnalyticsDays = 7;
+
+        function setAnalyticsRange(days) {
+            currentAnalyticsDays = days;
+            [7, 30, 90, 0].forEach(d => {
+                const btn = document.getElementById(`range-${d}`);
+                if (btn) {
+                    if (d === days) btn.className = 'px-3 py-1.5 rounded-xl border bg-indigo-600 text-white font-bold btn-3d';
+                    else btn.className = 'px-3 py-1.5 rounded-xl border bg-slate-100 text-slate-700 font-medium btn-3d';
+                }
+            });
+            renderAnalytics();
+        }
+
+        function applyCustomAnalyticsDates() {
+            renderAnalytics();
+        }
+
+        function sevToVal(sevStr) {
+            if (sevStr === 'Mild') return 1;
+            if (sevStr === 'Moderate') return 2;
+            if (sevStr === 'Severe') return 3;
+            return 0;
+        }
+
+        function renderAnalytics() {
+            let filteredLogs = logs;
+            const startVal = document.getElementById('analyticsStartDate').value;
+            const endVal = document.getElementById('analyticsEndDate').value;
+
+            let startDate = new Date();
+            let endDate = new Date();
+
+            if (startVal && endVal) {
+                startDate = new Date(`${startVal}T00:00:00`);
+                endDate = new Date(`${endVal}T23:59:59`);
+                filteredLogs = logs.filter(l => {
+                    const d = new Date(l.timestamp).toLocaleDateString('en-CA');
+                    return d >= startVal && d <= endVal;
+                });
+            } else if (currentAnalyticsDays > 0) {
+                startDate.setDate(endDate.getDate() - (currentAnalyticsDays - 1));
+                filteredLogs = logs.filter(l => new Date(l.timestamp) >= startDate);
+            } else {
+                if (logs.length > 0) {
+                    const timestamps = logs.map(l => new Date(l.timestamp).getTime());
+                    startDate = new Date(Math.min(...timestamps));
+                } else {
+                    startDate.setDate(endDate.getDate() - 30);
+                }
+            }
+
+            const zCounts = { Green: 0, Yellow: 0, 'Low Yellow': 0, Red: 0 };
+            filteredLogs.forEach(l => { if (l.zone && zCounts[l.zone] !== undefined) zCounts[l.zone]++; });
+
+            const ctxZone = document.getElementById('zoneChartCanvas').getContext('2d');
+            if (zoneChartInst) zoneChartInst.destroy();
+            zoneChartInst = new Chart(ctxZone, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Green', 'Yellow', 'Low Yellow', 'Red'],
+                    datasets: [{ data: [zCounts.Green, zCounts.Yellow, zCounts['Low Yellow'], zCounts.Red], backgroundColor: ['#86efac', '#fde047', '#fdba74', '#fca5a5'] }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
+            });
+
+            const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            let mode = 'day';
+            if (diffDays > 30 && diffDays <= 180) mode = 'week';
+            if (diffDays > 180) mode = 'month';
+
+            document.getElementById('contribGranularityBadge').innerText = mode === 'day' ? 'Daily View' : (mode === 'week' ? 'Weekly Macro View' : 'Monthly Macro View');
+
+            const timeWindows = [];
+            let curr = new Date(startDate);
+            while (curr <= endDate) {
+                let winStart = new Date(curr);
+                let winEnd = new Date(curr);
+
+                if (mode === 'day') {
+                } else if (mode === 'week') {
+                    winEnd.setDate(winEnd.getDate() + 6);
+                    if (winEnd > endDate) winEnd = new Date(endDate);
+                } else {
+                    winEnd.setMonth(winEnd.getMonth() + 1);
+                    winEnd.setDate(winEnd.getDate() - 1);
+                    if (winEnd > endDate) winEnd = new Date(endDate);
+                }
+
+                timeWindows.push({
+                    startStr: winStart.toLocaleDateString('en-CA'),
+                    endStr: winEnd.toLocaleDateString('en-CA'),
+                    label: mode === 'day' ? winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' }) : `${winStart.toLocaleDateString([], { month: 'numeric', day: 'numeric' })} - ${winEnd.toLocaleDateString([], { month: 'numeric', day: 'numeric' })}`
+                });
+
+                if (mode === 'day') curr.setDate(curr.getDate() + 1);
+                else if (mode === 'week') curr.setDate(curr.getDate() + 7);
+                else curr.setMonth(curr.getMonth() + 1);
+            }
+
+            const activeSymps = symptoms.filter(s => s.active);
+            const container = document.getElementById('contribMatrixRows');
+            container.innerHTML = '';
+
+            activeSymps.forEach(s => {
+                const rowEl = document.createElement('div');
+                rowEl.className = 'flex items-center gap-3';
+
+                const labelEl = document.createElement('div');
+                labelEl.className = 'w-32 text-xs font-bold text-slate-800 truncate shrink-0';
+                labelEl.innerText = s.name;
+                rowEl.appendChild(labelEl);
+
+                const blocksContainer = document.createElement('div');
+                blocksContainer.className = 'flex gap-1.5 items-center';
+
+                timeWindows.forEach((win) => {
+                    let maxSevVal = 0;
+                    const logsInWin = logs.filter(l => {
+                        const d = new Date(l.timestamp).toLocaleDateString('en-CA');
+                        return d >= win.startStr && d <= win.endStr;
+                    });
+
+                    logsInWin.forEach(l => {
+                        const sevStr = l.symptomMap ? l.symptomMap[s.name] : null;
+                        const v = sevToVal(sevStr);
+                        if (v > maxSevVal) maxSevVal = v;
+                    });
+
+                    const block = document.createElement('div');
+                    block.className = `w-6 h-6 rounded-lg contrib-block-${maxSevVal} shrink-0 cursor-pointer btn-3d flex items-center justify-center text-[9px] font-bold text-slate-700/60`;
+                    block.onclick = () => renderDrilldown(win, s.name, logsInWin);
+                    blocksContainer.appendChild(block);
+                });
+
+                rowEl.appendChild(blocksContainer);
+                container.appendChild(rowEl);
+            });
+        }
+
+        function renderDrilldown(win, symptomName, logsInWin) {
+            const panel = document.getElementById('contribDrilldownPanel');
+            const title = document.getElementById('drilldownTitle');
+            const body = document.getElementById('drilldownBody');
+
+            title.innerText = `${symptomName}: ${win.label}`;
+            
+            if (!logsInWin.length) {
+                body.innerHTML = '<div class="text-slate-400 italic">No log entries recorded in this time window.</div>';
+            } else {
+                body.innerHTML = logsInWin.map(l => {
+                    const dStr = new Date(l.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' });
+                    const sev = (l.symptomMap && l.symptomMap[symptomName]) ? l.symptomMap[symptomName] : 'None';
+                    const trigs = (l.triggers || []).join(', ') || 'None';
+                    
+                    const medEntries = [];
+                    Object.entries(l.medDoses || {}).forEach(([medId, times]) => {
+                        const med = meds.find(m => m.id == medId);
+                        if (med && times && times.length) medEntries.push(`${med.name} (${times.join(', ')})`);
+                    });
+
+                    return `
+                        <div class="border-b border-slate-200/60 pb-1.5 last:border-0">
+                            <div><strong>${dStr}:</strong> Severity: <span class="font-bold">${sev}</span> | Zone: ${l.zone || 'Unset'}</div>
+                            ${medEntries.length ? `<div class="text-[11px] text-slate-600">💊 Doses: ${medEntries.join('; ')} ${l.schoolInhaler ? '(+ School Inhaler)' : ''}</div>` : ''}
+                            ${trigs !== 'None' ? `<div class="text-[11px] text-slate-600">⚠️ Triggers: ${trigs}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            panel.classList.remove('hidden');
+        }
+
+        function exportCSV() {
+            let csv = "Date,Zone,Symptoms,Medication Doses,Activities,Triggers,School Inhaler\n";
+            logs.forEach(l => {
+                const d = new Date(l.timestamp).toLocaleDateString('en-CA');
+                const symps = Object.entries(l.symptomMap || {}).map(([s, sev]) => `${s}:${sev}`).join(';');
+                const medDoseStr = Object.entries(l.medDoses || {}).map(([mId, times]) => {
+                    const med = meds.find(m => m.id == mId);
+                    return `${med ? med.name : mId}:[${times.join(',')}]`;
+                }).join(';');
+                const acts = (l.activities || []).join(';');
+                const trigs = (l.triggers || []).join(';');
+                csv += `"${d}","${l.zone || 'None'}","${symps}","${medDoseStr}","${acts}","${trigs}","${l.schoolInhaler ? 'Yes' : 'No'}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `asthma_log_${new Date().toLocaleDateString('en-CA')}.csv`;
+            a.click();
+        }
+
+        function exportPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
