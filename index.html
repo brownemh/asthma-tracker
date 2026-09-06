@@ -1009,14 +1009,43 @@
             openDailyOverviewModal(selectedDateStr);
         }
 
+function navigateOverviewDate(days) {
+            const current = new Date(`${selectedDateStr}T12:00:00`);
+            current.setDate(current.getDate() + days);
+            selectedDateStr = current.toLocaleDateString('en-CA');
+            renderAll();
+            openDailyOverviewModal(selectedDateStr);
+        }
+
+        function setOverviewZone(z) {
+            const log = getLogForDate(selectedDateStr);
+            log.zone = (log.zone === z) ? null : z;
+            saveState();
+            renderAll();
+            openDailyOverviewModal(selectedDateStr);
+        }
+
         function openDailyOverviewModal(dStr) {
             selectedDateStr = dStr;
             const log = getLogForDate(dStr);
-            const formattedDate = new Date(`${dStr}T12:00:00`).toLocaleDateString([], { weekday: 'long', month: 'short', day: 'numeric', year: 'numeric' });
+            const formattedDate = new Date(`${dStr}T12:00:00`).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
             
             document.getElementById('overviewDateTitle').innerText = formattedDate;
             
-            renderZoneShiftsList(log);
+            ['Green', 'Yellow', 'Low-Yellow', 'Red'].forEach(z => {
+                const btn = document.getElementById(`overview-zone-${z}`);
+                if (btn) {
+                    const box = btn.querySelector('div');
+                    box.classList.remove('ring-2', 'ring-indigo-600', 'ring-offset-2', 'scale-105');
+                }
+            });
+            if (log.zone) {
+                const activeBtn = document.getElementById(`overview-zone-${log.zone.replace(' ', '-')}`);
+                if (activeBtn) {
+                    const box = activeBtn.querySelector('div');
+                    box.classList.add('ring-2', 'ring-indigo-600', 'ring-offset-2', 'scale-105');
+                }
+            }
 
             const sympEntries = Object.entries(log.symptomMap || {});
             const sympContainer = document.getElementById('overviewSympList');
@@ -1055,65 +1084,6 @@
             }
 
             toggleModal('dailyOverviewModal', true);
-        }
-
-        function renderZoneShiftsList(log) {
-            const container = document.getElementById('zoneShiftsList');
-            const shifts = log.zoneShifts || [];
-
-            if (!shifts.length && log.zone) {
-                container.innerHTML = `
-                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-slate-600">Active Zone:</span>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${getZoneClass(log.zone)}">${log.zone} Zone</span>
-                    </div>
-                `;
-            } else if (shifts.length) {
-                container.innerHTML = shifts.map((s, idx) => `
-                    <div class="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200">
-                        <span class="text-xs font-bold text-slate-500">${s.time}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold ${getZoneClass(s.zone)}">${s.zone} Zone</span>
-                            <button type="button" onclick="removeZoneShift(${idx})" class="text-red-500 font-bold px-1 text-sm">&times;</button>
-                        </div>
-                    </div>
-                `).join('');
-            } else {
-                container.innerHTML = '<div class="text-xs text-slate-400 italic">No zone recorded yet for this day</div>';
-            }
-        }
-
-        function openAddZoneShiftUI() {
-            const el = document.getElementById('addZoneShiftPicker');
-            el.classList.toggle('hidden');
-            document.getElementById('newShiftTime').value = new Date().toTimeString().slice(0, 5);
-        }
-
-        function saveNewZoneShift() {
-            const log = getLogForDate(selectedDateStr);
-            const time = document.getElementById('newShiftTime').value || '12:00';
-            const zone = document.getElementById('newShiftZone').value;
-
-            if (!log.zoneShifts) log.zoneShifts = [];
-            log.zoneShifts.push({ time, zone });
-            log.zone = zone;
-
-            saveState();
-            renderAll();
-            openDailyOverviewModal(selectedDateStr);
-            document.getElementById('addZoneShiftPicker').classList.add('hidden');
-        }
-
-        function removeZoneShift(idx) {
-            const log = getLogForDate(selectedDateStr);
-            if (log.zoneShifts) {
-                log.zoneShifts.splice(idx, 1);
-                if (log.zoneShifts.length) log.zone = log.zoneShifts[log.zoneShifts.length - 1].zone;
-                else log.zone = null;
-                saveState();
-                renderAll();
-                openDailyOverviewModal(selectedDateStr);
-            }
         }
 
         function switchTab(tabId) {
