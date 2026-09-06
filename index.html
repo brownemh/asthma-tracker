@@ -1489,7 +1489,7 @@
                     </div>
                     <div class="swipe-item relative bg-slate-50 p-2.5 flex justify-between items-center text-xs gap-2"
                          ontouchstart="handleTouchStart(event)" ontouchmove="handleTouchMove(event, this)">
-                        <input type="text" value="${title}" onchange="${onRename}(this.value)" class="flex-1 min-w-0 font-bold text-slate-800 bg-transparent focus:bg-white px-1.5 py-0.5 rounded-lg border border-transparent focus:border-slate-300 truncate">
+                        <input type="text" value="${title}" onchange="${onRename}" class="flex-1 min-w-0 font-bold text-slate-800 bg-transparent focus:bg-white px-1.5 py-0.5 rounded-lg border border-transparent focus:border-slate-300 truncate">
                         <div class="flex items-center gap-1.5 shrink-0">
                             <button type="button" onclick="${onToggle}" class="px-2.5 py-1 rounded-xl text-[10px] font-bold transition ${isActive ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}">${isActive ? 'Active' : 'Hidden'}</button>
                         </div>
@@ -1498,19 +1498,19 @@
             `;
 
             document.getElementById('settingsMedList').innerHTML = meds.map((m, idx) => 
-                createSwipeItem(m.name, m.active, `toggleMedActive(${idx})`, `deleteMedItem(${idx})`, `renameMed.bind(null, ${idx})`)
+                createSwipeItem(m.name, m.active, `toggleMedActive(${idx})`, `deleteMedItem(${idx})`, `renameMed(${idx}, this.value)`)
             ).join('');
 
             document.getElementById('settingsSympList').innerHTML = symptoms.map((s, idx) => 
-                createSwipeItem(s.name, s.active, `toggleSympActive(${idx})`, `deleteSympItem(${idx})`, `renameSymp.bind(null, ${idx})`)
+                createSwipeItem(s.name, s.active, `toggleSympActive(${idx})`, `deleteSympItem(${idx})`, `renameSymp(${idx}, this.value)`)
             ).join('');
 
             document.getElementById('settingsTrigList').innerHTML = triggers.map((t, idx) => 
-                createSwipeItem(t.name, t.active, `toggleTrigActive(${idx})`, `deleteTrigItem(${idx})`, `renameTrig.bind(null, ${idx})`)
+                createSwipeItem(t.name, t.active, `toggleTrigActive(${idx})`, `deleteTrigItem(${idx})`, `renameTrig(${idx}, this.value)`)
             ).join('');
 
             document.getElementById('settingsActList').innerHTML = activities.map((a, idx) => 
-                createSwipeItem(a.name, a.active, `toggleActActive(${idx})`, `deleteActItem(${idx})`, `renameAct.bind(null, ${idx})`)
+                createSwipeItem(a.name, a.active, `toggleActActive(${idx})`, `deleteActItem(${idx})`, `renameAct(${idx}, this.value)`)
             ).join('');
         }
 
