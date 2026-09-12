@@ -875,7 +875,7 @@
             return log;
         }
 
-        async function fetchLiveEnvData() {
+       async function fetchLiveEnvData() {
             const todayStr = new Date().toLocaleDateString('en-CA');
             const todayLog = getLogForDate(todayStr);
 
@@ -883,7 +883,7 @@
                 const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.0844&longitude=-106.6504&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FDenver');
                 const weatherData = await weatherRes.json();
 
-                const aqiRes = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=35.0844&longitude=-106.6504&current=us_aqi,grass_pollen,birch_pollen,ragweed_pollen&timezone=America%2FDenver');
+                const aqiRes = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=35.0844&longitude=-106.6504&current=us_aqi,pm2_5,pm10,ozone&timezone=America%2FDenver');
                 const aqiData = await aqiRes.json();
 
                 const tempMax = Math.round(weatherData.daily.temperature_2m_max[0]);
@@ -897,48 +897,50 @@
                 if (usAqi > 200) aqiCat = 'Very Unhealthy';
                 if (usAqi > 300) aqiCat = 'Hazardous';
 
-                const grassPollen = aqiData.current.grass_pollen ?? 0;
-                const treePollen = aqiData.current.birch_pollen ?? 0;
-                const weedPollen = aqiData.current.ragweed_pollen ?? 0;
-
-                const getPollenLevel = (val) => {
-                    if (val === 0) return 'None';
-                    if (val < 10) return 'Low';
-                    if (val < 50) return 'Moderate';
-                    return 'High';
-                };
+                const pm25 = aqiData.current.pm2_5 ? Math.round(aqiData.current.pm2_5) : null;
+                const pm10 = aqiData.current.pm10 ? Math.round(aqiData.current.pm10) : null;
 
                 const envRecord = {
                     tempMax,
                     tempMin,
                     aqi: usAqi,
                     aqiCategory: aqiCat,
-                    grassPollen: getPollenLevel(grassPollen),
-                    treePollen: getPollenLevel(treePollen),
-                    weedPollen: getPollenLevel(weedPollen)
+                    pm25,
+                    pm10
                 };
 
                 todayLog.envData = envRecord;
                 saveState();
                 updateEnvDisplay(envRecord);
             } catch (err) {
-                if (todayLog.envData) {
+                if (todayLog && todayLog.envData) {
                     updateEnvDisplay(todayLog.envData);
+                } else {
+                    const bannerAQI = document.getElementById('bannerAQI');
+                    const modalDetails = document.getElementById('envModalDetails');
+                    if (bannerAQI) bannerAQI.innerText = 'AQI: Unavailable';
+                    if (modalDetails) modalDetails.innerHTML = '<div>Unable to fetch live air quality data. Check connection.</div>';
                 }
             }
         }
 
         function updateEnvDisplay(env) {
             if (!env) return;
-            document.getElementById('bannerTemp').innerText = `${env.tempMax}° / ${env.tempMin}°F`;
-            document.getElementById('bannerAQI').innerText = `AQI: ${env.aqiCategory} (${env.aqi})`;
+            const bannerTemp = document.getElementById('bannerTemp');
+            const bannerAQI = document.getElementById('bannerAQI');
+            const modalDetails = document.getElementById('envModalDetails');
+
+            if (bannerTemp) bannerTemp.innerText = `${env.tempMax}° / ${env.tempMin}°F`;
+            if (bannerAQI) bannerAQI.innerText = `AQI: ${env.aqiCategory} (${env.aqi})`;
             
-            document.getElementById('envModalDetails').innerHTML = `
-                <div><strong>Air Quality Index:</strong> ${env.aqi} (${env.aqiCategory})</div>
-                <div><strong>Grass Pollen:</strong> ${env.grassPollen}</div>
-                <div><strong>Tree Pollen:</strong> ${env.treePollen}</div>
-                <div><strong>Weed Pollen:</strong> ${env.weedPollen}</div>
-            `;
+            if (modalDetails) {
+                modalDetails.innerHTML = `
+                    <div><strong>Air Quality Index (US AQI):</strong> ${env.aqi} (${env.aqiCategory})</div>
+                    <div><strong>High / Low Temp:</strong> ${env.tempMax}° / ${env.tempMin}°F</div>
+                    ${env.pm25 !== null ? `<div><strong>PM2.5 Fine Particles:</strong> ${env.pm25} µg/m³</div>` : ''}
+                    ${env.pm10 !== null ? `<div><strong>PM10 Dust/Pollen:</strong> ${env.pm10} µg/m³</div>` : ''}
+                `;
+            }
         }
 
         function openDailyOverviewModal(dStr) {
@@ -1004,7 +1006,7 @@
                 envContainer.innerHTML = `
                     <div>• <strong>AQI:</strong> ${log.envData.aqi} (${log.envData.aqiCategory})</div>
                     <div>• <strong>High / Low:</strong> ${log.envData.tempMax}° / ${log.envData.tempMin}°F</div>
-                    <div>• <strong>Pollen:</strong> Grass: ${log.envData.grassPollen} | Tree: ${log.envData.treePollen} | Weed: ${log.envData.weedPollen}</div>
+                    ${log.envData.pm25 !== null ? `<div>• <strong>Particulates (PM2.5):</strong> ${log.envData.pm25} µg/m³</div>` : ''}
                 `;
             } else {
                 envContainer.innerHTML = '<div class="text-slate-400 italic">No environmental data saved for this day</div>';
