@@ -537,6 +537,75 @@
                         <div id="overviewActList" class="text-xs space-y-1 text-slate-700"></div>
                     </div>
 
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">🌍 Environmental & Air Quality</span>
+                        </div>
+                        <div id="overviewEnvList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                </div>
+
+                <button type="button" onclick="toggleModal('dailyOverviewModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close Overview</button>
+            </div>
+        </div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block mb-1">Zone</span>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button type="button" id="overview-zone-Green" onclick="setOverviewZone('Green')" class="flex flex-col items-center btn-3d">
+                            <div class="w-full h-8 rounded-xl zone-bg-Green transition-all"></div>
+                            <span class="text-[10px] font-bold text-slate-700 mt-1">Green</span>
+                        </button>
+                        <button type="button" id="overview-zone-Yellow" onclick="setOverviewZone('Yellow')" class="flex flex-col items-center btn-3d">
+                            <div class="w-full h-8 rounded-xl zone-bg-Yellow transition-all"></div>
+                            <span class="text-[10px] font-bold text-slate-700 mt-1">Yellow</span>
+                        </button>
+                        <button type="button" id="overview-zone-Low-Yellow" onclick="setOverviewZone('Low Yellow')" class="flex flex-col items-center btn-3d">
+                            <div class="w-full h-8 rounded-xl zone-bg-Low-Yellow transition-all"></div>
+                            <span class="text-[10px] font-bold text-slate-700 mt-1">Low Yellow</span>
+                        </button>
+                        <button type="button" id="overview-zone-Red" onclick="setOverviewZone('Red')" class="flex flex-col items-center btn-3d">
+                            <div class="w-full h-8 rounded-xl zone-bg-Red transition-all"></div>
+                            <span class="text-[10px] font-bold text-slate-700 mt-1">Red</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">🩺 Symptoms</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('symptomsModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Symptoms ➔</button>
+                        </div>
+                        <div id="overviewSympList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">💊 Medications & Doses</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('medsModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Meds ➔</button>
+                        </div>
+                        <div id="overviewMedsList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">⚠️ Triggers</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('trigModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Triggers ➔</button>
+                        </div>
+                        <div id="overviewTrigList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
+                    <div class="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-900">🏃 Activities</span>
+                            <button type="button" onclick="toggleModal('dailyOverviewModal', false); toggleModal('actModal', true);" class="text-[11px] font-bold text-indigo-600 hover:underline">Edit Activities ➔</button>
+                        </div>
+                        <div id="overviewActList" class="text-xs space-y-1 text-slate-700"></div>
+                    </div>
+
                 </div>
 
                 <button type="button" onclick="toggleModal('dailyOverviewModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close Overview</button>
@@ -633,17 +702,14 @@
             </div>
         </div>
 
-        <div id="envModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
+       <div id="envModal" class="fixed inset-0 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4 z-50">
             <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 shadow-xl">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
-                    <h3 class="font-bold text-slate-900 text-sm">🌍 Environmental Details</h3>
+                    <h3 class="font-bold text-slate-900 text-sm">🌍 Environmental Details (Albuquerque)</h3>
                     <button type="button" onclick="toggleModal('envModal', false)" class="text-slate-400 font-bold text-xl">&times;</button>
                 </div>
-                <div class="text-xs space-y-2 text-slate-700">
-                    <div><strong>Air Quality Index:</strong> 42 (Good)</div>
-                    <div><strong>Grass Pollen:</strong> Low</div>
-                    <div><strong>Tree Pollen:</strong> Low</div>
-                    <div><strong>Weed Pollen:</strong> Low</div>
+                <div id="envModalDetails" class="text-xs space-y-2 text-slate-700">
+                    <div>Loading environmental data...</div>
                 </div>
                 <button type="button" onclick="toggleModal('envModal', false)" class="w-full bg-slate-900 text-white py-3 rounded-2xl text-xs font-bold btn-3d">Close</button>
             </div>
@@ -775,96 +841,7 @@
             initDoseTime();
             renderAll();
             checkSundayBackupPrompt();
-        }
-
-        function lockApp() {
-            document.getElementById('password').value = '';
-            document.getElementById('app-wrapper').classList.add('hidden');
-            document.getElementById('auth-overlay').style.display = 'flex';
-            document.getElementById('login-form').classList.remove('hidden');
-            document.getElementById('recovery-entry-box').style.display = 'none';
-            document.getElementById('recovery-setup-box').style.display = 'none';
-            document.getElementById('instruction').textContent = 'Enter passcode';
-        }
-
-        /* ORIGINAL APP FUNCTIONS */
-        function loadState() {
-            try {
-                logs = JSON.parse(localStorage.getItem('asthma_logs')) || [];
-                logs.forEach(l => {
-                    if (!l.medDoses) l.medDoses = {};
-                    if (!l.symptomMap) l.symptomMap = {};
-                    if (!l.activities) l.activities = [];
-                    if (!l.triggers) l.triggers = [];
-                    if (!l.zoneShifts) l.zoneShifts = [];
-                });
-
-                const savedMeds = JSON.parse(localStorage.getItem('asthma_meds_v4'));
-                meds = (Array.isArray(savedMeds) && savedMeds.length > 0) ? savedMeds : [
-                    { id: 1, name: 'Albuterol', active: true },
-                    { id: 2, name: 'Asmanex', active: true }
-                ];
-
-                doctors = JSON.parse(localStorage.getItem('asthma_doctors')) || { pcp: '', pulm: '', nurse: '' };
-
-                const savedActivities = JSON.parse(localStorage.getItem('asthma_activities_v4'));
-                activities = (Array.isArray(savedActivities) && savedActivities.length > 0) ? savedActivities : [
-                    { name: '🏃 Active Play', active: true },
-                    { name: '⚽ Sports / Running', active: true },
-                    { name: '🏊 Swimming', active: true },
-                    { name: '🛝 School Recess / P.E.', active: true },
-                    { name: '🚴 Bike Riding', active: true },
-                    { name: '⛺ Outdoor Camping / Hiking', active: true }
-                ];
-
-                const savedTriggers = JSON.parse(localStorage.getItem('asthma_triggers_v4'));
-                triggers = (Array.isArray(savedTriggers) && savedTriggers.length > 0) ? savedTriggers : [
-                    { name: '🥶 Cold Air Exposure', active: true },
-                    { name: '🤧 Cold / Post-Viral', active: true },
-                    { name: '💨 High Wind', active: true },
-                    { name: '🌸 High Pollen', active: true },
-                    { name: '🐱 Pet Dander', active: true },
-                    { name: '🪵 Campfire Smoke', active: true }
-                ];
-
-                const savedSymptoms = JSON.parse(localStorage.getItem('asthma_symptoms_v4'));
-                symptoms = (Array.isArray(savedSymptoms) && savedSymptoms.length > 0) ? savedSymptoms : [
-                    { name: '🗣️ Coughing', active: true },
-                    { name: '🌙 Worse Nighttime Coughing', active: true },
-                    { name: '😴 Nighttime Waking', active: true },
-                    { name: '🫁 Wheezing', active: true },
-                    { name: '😮‍💨 Shortness of Breath', active: true },
-                    { name: '💔 Chest Tightness / Pain', active: true },
-                    { name: '📉 Low Peak Flow', active: true }
-                ];
-                protocols = JSON.parse(localStorage.getItem('asthma_protocols')) || { Green: '', Yellow: '', 'Low Yellow': '', Red: '' };
-                actionPlanImgData = localStorage.getItem('asthma_action_plan_img');
-                if (actionPlanImgData) displayActionPlanPreview(actionPlanImgData);
-            } catch(e) {}
-        }
-
-        function saveState() {
-            localStorage.setItem('asthma_logs', JSON.stringify(logs));
-            localStorage.setItem('asthma_meds_v4', JSON.stringify(meds));
-            localStorage.setItem('asthma_doctors', JSON.stringify(doctors));
-            localStorage.setItem('asthma_activities_v4', JSON.stringify(activities));
-            localStorage.setItem('asthma_triggers_v4', JSON.stringify(triggers));
-            localStorage.setItem('asthma_symptoms_v4', JSON.stringify(symptoms));
-            localStorage.setItem('asthma_protocols', JSON.stringify(protocols));
-            
-            showOverviewSaveToast();
-        }
-
-        function showOverviewSaveToast() {
-            const toast = document.getElementById('overviewSavedToast');
-            if (toast) {
-                toast.classList.remove('hidden');
-                setTimeout(() => toast.classList.add('hidden'), 1500);
-            }
-        }
-
-        function initDoseTime() {
-            document.getElementById('medDoseTime').value = new Date().toTimeString().slice(0, 5);
+            fetchLiveEnvData();
         }
 
         function getLogForDate(dateStr) {
@@ -884,7 +861,8 @@
                     activities: [], 
                     triggers: [], 
                     medDoses: {}, 
-                    schoolInhaler: false 
+                    schoolInhaler: false,
+                    envData: null
                 };
                 logs.unshift(log);
                 saveState();
@@ -897,132 +875,70 @@
             return log;
         }
 
-        function renderAll() {
-            renderWeeklyRibbon();
-            renderFullMonthGrid();
-            renderActiveZone();
-            renderLauncherBadges();
-            renderLogs();
-            renderSymptomsModal();
-            renderMedsModal();
-            renderTrigModal();
-            renderActModal();
-            renderDoctors();
-            loadProtocolsUI();
-            renderSettingsManager();
-        }
+        async function fetchLiveEnvData() {
+            const todayStr = new Date().toLocaleDateString('en-CA');
+            const todayLog = getLogForDate(todayStr);
 
-        function renderWeeklyRibbon() {
-            const container = document.getElementById('weeklyRibbonDays');
-            container.innerHTML = '';
+            try {
+                const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=35.0844&longitude=-106.6504&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FDenver');
+                const weatherData = await weatherRes.json();
 
-            const today = new Date();
-            for (let i = 6; i >= 0; i--) {
-                const d = new Date();
-                d.setDate(today.getDate() - i);
-                const dStr = d.toLocaleDateString('en-CA');
-                const dayName = d.toLocaleDateString([], { weekday: 'narrow' });
-                const dayNum = d.getDate();
+                const aqiRes = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=35.0844&longitude=-106.6504&current=us_aqi,grass_pollen,birch_pollen,ragweed_pollen&timezone=America%2FDenver');
+                const aqiData = await aqiRes.json();
 
-                const log = logs.find(l => l.timestamp && new Date(l.timestamp).toLocaleDateString('en-CA') === dStr);
-                const zone = log ? log.zone : 'None';
-                const isSelected = (dStr === selectedDateStr);
+                const tempMax = Math.round(weatherData.daily.temperature_2m_max[0]);
+                const tempMin = Math.round(weatherData.daily.temperature_2m_min[0]);
+                const usAqi = Math.round(aqiData.current.us_aqi);
 
-                let bgClass = 'zone-bg-None';
-                if (zone === 'Green') bgClass = 'zone-bg-Green';
-                if (zone === 'Yellow') bgClass = 'zone-bg-Yellow';
-                if (zone === 'Low Yellow') bgClass = 'zone-bg-Low-Yellow';
-                if (zone === 'Red') bgClass = 'zone-bg-Red';
+                let aqiCat = 'Good';
+                if (usAqi > 50) aqiCat = 'Moderate';
+                if (usAqi > 100) aqiCat = 'Unhealthy for Sensitive Groups';
+                if (usAqi > 150) aqiCat = 'Unhealthy';
+                if (usAqi > 200) aqiCat = 'Very Unhealthy';
+                if (usAqi > 300) aqiCat = 'Hazardous';
 
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `p-1.5 rounded-2xl flex flex-col items-center justify-center transition border btn-3d ${bgClass} ${isSelected ? 'ring-2 ring-indigo-600 scale-105 font-bold shadow-xs' : 'opacity-85'}`;
-                btn.innerHTML = `<span class="text-[9px] uppercase font-bold">${dayName}</span><span class="text-xs font-black">${dayNum}</span>`;
-                btn.onclick = () => selectRibbonDate(dStr);
-                container.appendChild(btn);
-            }
+                const grassPollen = aqiData.current.grass_pollen ?? 0;
+                const treePollen = aqiData.current.birch_pollen ?? 0;
+                const weedPollen = aqiData.current.ragweed_pollen ?? 0;
 
-            const isToday = (selectedDateStr === today.toLocaleDateString('en-CA'));
-            const todayPill = document.getElementById('todayDateStr');
-            if (todayPill) {
-                todayPill.innerText = isToday ? 'Today' : new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' });
-            }
-            document.getElementById('quickLogTitleDate').innerText = isToday ? "Today's Quick Log" : `Log for ${new Date(`${selectedDateStr}T12:00:00`).toLocaleDateString([], { month: 'short', day: 'numeric' })}`;
-        }
+                const getPollenLevel = (val) => {
+                    if (val === 0) return 'None';
+                    if (val < 10) return 'Low';
+                    if (val < 50) return 'Moderate';
+                    return 'High';
+                };
 
-        function toggleFullCalendar() {
-            const el = document.getElementById('fullMonthCalendar');
-            el.classList.toggle('hidden');
-            if (!el.classList.contains('hidden')) renderFullMonthGrid();
-        }
+                const envRecord = {
+                    tempMax,
+                    tempMin,
+                    aqi: usAqi,
+                    aqiCategory: aqiCat,
+                    grassPollen: getPollenLevel(grassPollen),
+                    treePollen: getPollenLevel(treePollen),
+                    weedPollen: getPollenLevel(weedPollen)
+                };
 
-        function changeMonth(delta) {
-            currentMonthDate.setMonth(currentMonthDate.getMonth() + delta);
-            renderFullMonthGrid();
-        }
-
-        function renderFullMonthGrid() {
-            const container = document.getElementById('fullMonthGrid');
-            if (!container) return;
-            container.innerHTML = '';
-
-            const year = currentMonthDate.getFullYear();
-            const month = currentMonthDate.getMonth();
-            document.getElementById('monthYearTitle').innerText = new Date(year, month).toLocaleDateString([], { month: 'long', year: 'numeric' });
-
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-
-            for (let i = 0; i < firstDay; i++) {
-                container.appendChild(document.createElement('div'));
-            }
-
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const log = logs.find(l => l.timestamp && new Date(l.timestamp).toLocaleDateString('en-CA') === dStr);
-                const zone = log ? log.zone : 'None';
-
-                let bgClass = 'zone-bg-None';
-                if (zone === 'Green') bgClass = 'zone-bg-Green';
-                if (zone === 'Yellow') bgClass = 'zone-bg-Yellow';
-                if (zone === 'Low Yellow') bgClass = 'zone-bg-Low-Yellow';
-                if (zone === 'Red') bgClass = 'zone-bg-Red';
-
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `p-1 text-[11px] font-bold rounded-xl border transition ${bgClass} ${dStr === selectedDateStr ? 'ring-2 ring-indigo-600 font-black' : ''}`;
-                btn.innerText = day;
-                btn.onclick = () => selectRibbonDate(dStr);
-                container.appendChild(btn);
+                todayLog.envData = envRecord;
+                saveState();
+                updateEnvDisplay(envRecord);
+            } catch (err) {
+                if (todayLog.envData) {
+                    updateEnvDisplay(todayLog.envData);
+                }
             }
         }
 
-        function selectRibbonDate(dStr) {
-            selectedDateStr = dStr;
-            renderAll();
-            openDailyOverviewModal(dStr);
-        }
-
-        function resetToTodayDate() {
-            selectedDateStr = new Date().toLocaleDateString('en-CA');
-            renderAll();
-            openDailyOverviewModal(selectedDateStr);
-        }
-
-function navigateOverviewDate(days) {
-            const current = new Date(`${selectedDateStr}T12:00:00`);
-            current.setDate(current.getDate() + days);
-            selectedDateStr = current.toLocaleDateString('en-CA');
-            renderAll();
-            openDailyOverviewModal(selectedDateStr);
-        }
-
-        function setOverviewZone(z) {
-            const log = getLogForDate(selectedDateStr);
-            log.zone = (log.zone === z) ? null : z;
-            saveState();
-            renderAll();
-            openDailyOverviewModal(selectedDateStr);
+        function updateEnvDisplay(env) {
+            if (!env) return;
+            document.getElementById('bannerTemp').innerText = `${env.tempMax}° / ${env.tempMin}°F`;
+            document.getElementById('bannerAQI').innerText = `AQI: ${env.aqiCategory} (${env.aqi})`;
+            
+            document.getElementById('envModalDetails').innerHTML = `
+                <div><strong>Air Quality Index:</strong> ${env.aqi} (${env.aqiCategory})</div>
+                <div><strong>Grass Pollen:</strong> ${env.grassPollen}</div>
+                <div><strong>Tree Pollen:</strong> ${env.treePollen}</div>
+                <div><strong>Weed Pollen:</strong> ${env.weedPollen}</div>
+            `;
         }
 
         function openDailyOverviewModal(dStr) {
@@ -1081,6 +997,17 @@ function navigateOverviewDate(days) {
                 actContainer.innerHTML = `<div class="flex flex-wrap gap-1.5">${log.activities.map(a => `<span class="bg-slate-200 text-slate-800 px-2 py-0.5 rounded-lg font-semibold text-[11px]">${a}</span>`).join('')}</div>`;
             } else {
                 actContainer.innerHTML = '<div class="text-slate-400 italic">No activities logged for this day</div>';
+            }
+
+            const envContainer = document.getElementById('overviewEnvList');
+            if (log.envData) {
+                envContainer.innerHTML = `
+                    <div>• <strong>AQI:</strong> ${log.envData.aqi} (${log.envData.aqiCategory})</div>
+                    <div>• <strong>High / Low:</strong> ${log.envData.tempMax}° / ${log.envData.tempMin}°F</div>
+                    <div>• <strong>Pollen:</strong> Grass: ${log.envData.grassPollen} | Tree: ${log.envData.treePollen} | Weed: ${log.envData.weedPollen}</div>
+                `;
+            } else {
+                envContainer.innerHTML = '<div class="text-slate-400 italic">No environmental data saved for this day</div>';
             }
 
             toggleModal('dailyOverviewModal', true);
